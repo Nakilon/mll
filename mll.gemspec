@@ -1,11 +1,11 @@
 Gem::Specification.new do |spec|
   spec.name          = "mll"
-  spec.version       = "0.0.1"
+  spec.version       = "0.1.0"
   spec.authors       = ["Victor Maslov"]
   spec.email         = ["nakilon@gmail.com"]
   spec.summary       = "Mathematica Language Library in Ruby"
   spec.description   = ""
-  # spec.homepage      = ""
+  spec.homepage      = "https://github.com/Nakilon/mll"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
