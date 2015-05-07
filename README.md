@@ -4,25 +4,21 @@
 
 ## Usage
 
-Планируется несколько способов использования этой библиотеки -- как доступ к ней через `MLL::`, так и манкипатчинг стандартных типов, таких как Numeric и Array.
+~~Планируется несколько способов использования этой библиотеки -- как доступ к ней через `MLL::`, так и манкипатчинг стандартных типов, таких как Numeric и Array.~~
 
 ### Examples:
 
-    MLL::range(3).to_a               #=> [1, 2, 3]
-    MLL::range(range(3)).map(&:to_a) #=> [[1], [1, 2], [1, 2, 3]]
+    MLL::range(3).to_a    #=> [1, 2, 3]
+    MLL::range(2, 3).to_a #=> [
+                               #<Enumerator: 1..2:step(1)>,
+                               #<Enumerator: 1..3:step(1)>,
+                              ]
+    MLL::range(1..3)      #=> [
+                               #<Enumerator: 1..1:step(1)>,
+                               #<Enumerator: 1..2:step(1)>,
+                               #<Enumerator: 1..3:step(1)>
+                              ]
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'mll'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
 
     $ gem install mll

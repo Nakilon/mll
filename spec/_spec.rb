@@ -64,12 +64,12 @@ describe MLL do
 
         describe "Neat Examples" do
 
-          example "range(range(n))" do
+          example "range(1..3)" do
             # expect(MLL::range(MLL::range(3))).to be_a Enumerator # TODO revive me
-            MLL::range(MLL::range(5)).each do |i|
+            MLL::range(MLL::range(3)).each do |i|
               expect(i).to be_a Enumerator
             end
-            expect(MLL::range(MLL::range(5)).map(&:to_a)).to eq [[1],[1,2],[1,2,3],[1,2,3,4],[1,2,3,4,5]]
+            expect(MLL::range(1..3).map(&:to_a)).to eq [[1],[1,2],[1,2,3]]
           end
           example "range(range(range(n)))" do
             # expect(MLL::range(MLL::range(3))).to be_a Enumerator # TODO revive me
