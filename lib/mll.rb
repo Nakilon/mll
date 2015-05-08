@@ -5,7 +5,7 @@ module MLL
     (class << self; self end).class_eval do
       define_method name do |*args|
         if args.size == 1 && args.first.respond_to?(:map)
-          args.first.map &method(name)
+          args.first.lazy.map &method(name)
         else
           block.call *args
         end
@@ -14,54 +14,44 @@ module MLL
   end
 
   define_function_that_can_enumerate :range do |*args|
-    raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)") unless (1..3).include? args.size
-    next range 1, args[0] if args.size == 1
-    Range.new(args[0], args[1]).step(args[2] || 1)
-  end
-
-end
-
-
-=begin
-
-      # http://reference.wolfram.com/language/guide/HandlingArraysOfData.html
-      # http://reference.wolfram.com/language/guide/ComputationWithStructuredDatasets.html
-
-module Enumerable
-  STDERR.puts "WARNING: #{name}#range was already defined" if method_defined? "range"
-  def range
-    # if self.respond_to? :each
-      if self.first.respond_to? :each
-        raise ArgumentError.new("if the first #range parameter responds to :each, it should be the only argument") \
-          if self.size > 1
-        self.first.zip.map &:range
+    case args.size
+    when 1 ; range 1, args[0] # TODO do smth with #table(-n)
+    when 2 ; Range.new(args[0], args[1])
+    when 3
+      case args[2] <=> 0
+      when 0 ; raise ArgumentError.new("step can't be zero")
+      when 1 ; Range.new(args[0], args[1]).step args[2]
       else
-        case self.size
-        when 1 ; [1,self.first].range
-        when 2 ; Range.new(*self.take(2)).step(1) # to convert Rage into Enumerator
-        when 3 ; Range.new(*self.take(2)).step(self.drop(2).first)
-        when 4 ; raise ArgumentError.new("wrong number of arguments (#{self.size} for 1..3)")
+        Enumerator.new do |e|
+          from, to, step = *args
+          while (step > 0) ? from <= to : from >= to
+            e << from
+            from += step
+          end
         end
       end
-    # else
-    #   [1, self].range
-    # end
+    else
+      raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)") # unless (1..3).include? args.size
+    end
   end
-end
 
-class Fixnum
-  STDERR.puts "WARNING: #{name}#range was already defined" if method_defined? "range"
-  def range
-    # if self.respond_to? :each
-    #   if self.first.respond_to? :each
-    #     self.map &:range
-    #   else
-    #     Range.new(*self[0,2]).step(self[2] || 1)
-    #   end
-    # else
-      [self].range
-    # end
+  def self.table f, *args
+    # TODO make it lazy?
+
+    [].tap do |result|
+      [[result, args.map{ |r| range(*r).to_a }]].tap do |stack|
+        stack.each do |ai, ri|
+          ai.replace ri.first.map{ |i|
+            if ri.size == 1
+              f.call(*ai, i)
+            else
+              [*ai.dup, i].tap{ |t| stack << [t, ri.drop(1)] }
+            end
+          }
+        end
+      end
+    end
+
   end
-end
 
-=end
+end
