@@ -99,18 +99,18 @@ describe MLL do
         describe "Basic Examples" do
 
           example "table(lambda, [n])" do
-            expect(MLL::table(->(i){ i**2 }, [10])).to eq [1,4,9,16,25,36,49,64,81,100]
+            expect(MLL::table(->(i){ i**2 }, 10)).to eq [1,4,9,16,25,36,49,64,81,100]
           end
           example "table(lambda, [imin, imax, id])" do
             expect(MLL::table(->(i){ i+2 }, [0, 20, 2])).to eq [2,4,6,8,10,12,14,16,18,20,22]
           end
           example "table(lambda, [n1], [n2])" do
-            expect(MLL::table(->(i, j){ 10*i + j }, [4], [3])).to eq [[11,12,13],[21,22,23],[31,32,33],[41,42,43]]
+            expect(MLL::table(->(i, j){ 10*i + j }, 4, 3)).to eq [[11,12,13],[21,22,23],[31,32,33],[41,42,43]]
           end
 
           example "matrix_form table(lambda, [n1], [n2])" do
             pending "#matrix_form is yet to be implemented"
-            expect(MLL::matrix_form MLL::table(->(i, j){ 10*i + j }, [4], [3])).to eq "
+            expect(MLL::matrix_form MLL::table(->(i, j){ 10*i + j }, 4, 3)).to eq "
             "
           end
 
