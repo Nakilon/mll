@@ -13,8 +13,6 @@ describe MLL do
       # http://reference.wolfram.com/language/ref/Range.html
       describe "#range" do
 
-        # TODO negative step and add it to README.rb
-
         example "range( >3 args )" do
           expect{ MLL::range(1,2,3,4) }.to raise_error ArgumentError
         end
@@ -25,11 +23,11 @@ describe MLL do
             expect(MLL::range(4)).to be_a Range
             expect(MLL::range(4).to_a).to eq [1,2,3,4]
           end
-          example "range(imin, imax)" do
+          example "range(min, max)" do
             expect(MLL::range(2,5)).to be_a Range
             expect(MLL::range(2,5).to_a).to eq [2,3,4,5]
           end
-          example "range(imin, imax, id)" do
+          example "range(min, max, step)" do
             expect(MLL::range(1,2,3)).to be_a Enumerator
             expect(MLL::range(1,2,0.5).to_a).to eq [1,1.5,2] # can be precision problems
             expect(MLL::range(2,6,2).to_a).to eq [2,4,6]
@@ -38,6 +36,7 @@ describe MLL do
             expect(MLL::range(10,-5,-2).to_a).to eq [10,8,6,4,2,0,-2,-4]
             expect(MLL::range(3,1,-1).to_a).to eq [3,2,1]
           end
+
         end
 
         describe "Generalizations & Extensions" do
@@ -63,9 +62,9 @@ describe MLL do
 
         describe "Neat Examples" do
 
-          example "range(imin..imax)" do
-            expect(MLL::range(MLL::range(3))).to be_a Enumerator
-            MLL::range(MLL::range(3)).each do |i|
+          example "range(min..max)" do
+            expect(MLL::range(1..3)).to be_a Enumerator
+            MLL::range(1..3).each do |i|
               expect(i).to be_a Range
             end
             expect(MLL::range(1..3).to_a.map(&:to_a)).to eq [[1],[1,2],[1,2,3]]
@@ -95,23 +94,52 @@ describe MLL do
 
       # http://reference.wolfram.com/language/ref/Table.html
       describe "#table" do
+        # TODO type checks
 
         describe "Basic Examples" do
 
-          example "table(lambda, [n])" do
+          example "table(lambda, n)" do
             expect(MLL::table(->(i){ i**2 }, 10)).to eq [1,4,9,16,25,36,49,64,81,100]
           end
-          example "table(lambda, [imin, imax, id])" do
+          example "table(lambda, [min, max, step])" do
             expect(MLL::table(->(i){ i+2 }, [0, 20, 2])).to eq [2,4,6,8,10,12,14,16,18,20,22]
           end
-          example "table(lambda, [n1], [n2])" do
+          example "table(lambda, n1, n2)" do
+            # TODO example to README.rb about multiplication table
             expect(MLL::table(->(i, j){ 10*i + j }, 4, 3)).to eq [[11,12,13],[21,22,23],[31,32,33],[41,42,43]]
           end
+          example "table(lambda, n1, min..max, [min, max, step])" do
+            expect(MLL::table(->(i,j,k){ [i,j,k] }, 3, 2..3, [1, 5, 2])).to eq \
+            [
+             [[[1, 2, 1], [1, 2, 3], [1, 2, 5]], [[1, 3, 1], [1, 3, 3], [1, 3, 5]]],
+             [[[2, 2, 1], [2, 2, 3], [2, 2, 5]], [[2, 3, 1], [2, 3, 3], [2, 3, 5]]],
+             [[[3, 2, 1], [3, 2, 3], [3, 2, 5]], [[3, 3, 1], [3, 3, 3], [3, 3, 5]]]
+            ]
+          end
 
-          example "matrix_form table(lambda, [n1], [n2])" do
+          example "matrix_form table(lambda, n1, n2)" do
             pending "#matrix_form is yet to be implemented"
             expect(MLL::matrix_form MLL::table(->(i, j){ 10*i + j }, 4, 3)).to eq "
             "
+          end
+
+        end
+
+        describe "Scope" do
+
+          # TODO: "Make a triangular array:"
+
+          example "table(lambda, [list1], [list2])" do
+            expect(MLL::table(->(base, power){ base ** power }, [[1,2,4]], [[1,3,4]])).to eq [[1,1,1],[2,8,16],[4,64,256]]
+          end
+
+        end
+
+        describe "Applications" do
+
+          example "column table(binomial, )" do
+            pending "#binomial and #column are yet to be implemented"
+            fail
           end
 
         end

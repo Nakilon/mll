@@ -24,7 +24,8 @@ module MLL
       else
         Enumerator.new do |e|
           from, to, step = *args
-          while (step > 0) ? from <= to : from >= to
+          # while (step > 0) ? from <= to : from >= to
+          while from >= to
             e << from
             from += step
           end
@@ -36,10 +37,11 @@ module MLL
   end
 
   def self.table f, *args
-    # TODO make it lazy?
-
     [].tap do |result|
-      [[result, args.map{ |r| range(*r).to_a }]].tap do |stack|
+      [[result, args.map{ |r|
+        r.respond_to?(:map) && r.first.respond_to?(:map) ?
+          r.first : range(*r)
+      }]].tap do |stack|
         stack.each do |ai, ri|
           ai.replace ri.first.map{ |i|
             if ri.size == 1
@@ -51,7 +53,6 @@ module MLL
         end
       end
     end
-
   end
 
 end
