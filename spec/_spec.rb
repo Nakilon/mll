@@ -2,7 +2,9 @@ require_relative File.join "..", "lib", "mll"
 
 
 # PERMANENT TODO test all implemented exceptions
-# PERMANENT TODO test all types returned
+# PERMANENT TODO test all types returned (not actually all but about lazyness)
+
+# TODO check for "Details" paragraphs to make more trivial examples
 
 
 # http://reference.wolfram.com/language/guide/LanguageOverview.html
@@ -19,8 +21,8 @@ describe MLL do
 
         describe "Basic Examples" do
 
-          example "n1 / n2" do
-            expect(MLL::divide(77,11)).to be_a Fixnum
+          example "divide(n1, n2)" do
+            # expect(MLL::divide(77,11)).to be_a Fixnum
             expect(MLL::divide(77,11)).to eq 7
           end
 
@@ -28,11 +30,11 @@ describe MLL do
 
         describe "Scope" do
 
-          example "list / n" do
+          example "divide(list, n)" do
             expect(MLL::divide([2,3,4,5],2.0)).to be_a Enumerator
             expect(MLL::divide([2,3,4,5],2.0).to_a).to eq [1,1.5,2,2.5]
           end
-          example "list / list" do
+          example "divide(list, list)" do
             expect(MLL::divide([2,3,4],[2,1,4])).to be_a Enumerator
             expect(MLL::divide([2,3,4],[2,1,4]).to_a).to eq [1,3,1]
           end
@@ -59,6 +61,32 @@ describe MLL do
           example "table(divide, n1, n2)" do
             expect(MLL::table(MLL.method(:divide), [[3,6]], 4.0)).to be_a Array
             expect(MLL::table(MLL.method(:divide), [[6]], 4.0)).to eq [[6.0,3.0,2.0,1.5]]
+          end
+
+        end
+
+      end
+
+      # http://reference.wolfram.com/language/ref/Times.html
+      describe "#times" do
+
+        describe "Basic Examples" do
+
+          example "times(n1, n2, n3)" do
+            # expect(MLL::times(2,3,4)).to be_a Fixnum
+            expect(MLL::times(2,3,4)).to eq 24
+          end
+          example "times(n, [n1, n2, n3])" do
+            expect(MLL::times(2,[3,4,5])).to be_a Enumerator
+            expect(MLL::times(2,[3,4,5]).to_a).to eq [6,8,10]
+          end
+          example "times(n1, n2, [n3, n4])" do
+            expect(MLL::times(2,3,[4,5])).to be_a Enumerator
+            expect(MLL::times(2,3,[4,5]).to_a).to eq [24,30]
+          end
+          example "times([[n1, n2], [n3, n4]], [n5, n6])" do
+            expect(MLL::times([[1,2],[3,4]],[5,6])).to be_a Enumerator
+            expect(MLL::times([[1,2],[3,4]],[5,6]).to_a.map(&:to_a)).to eq [[5,10],[18,24]]
           end
 
         end
@@ -162,7 +190,6 @@ describe MLL do
 
       # http://reference.wolfram.com/language/ref/Table.html
       describe "#table" do
-        # TODO type checks
 
         describe "Basic Examples" do
 
