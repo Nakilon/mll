@@ -4,10 +4,14 @@ module MLL
   def self.define_listable_function name, &block
     (class << self; self end).class_eval do # http://stackoverflow.com/a/12792313/322020
       define_method name do |*args|
-        next args[0].lazy.zip(args[1]).map{ |i,j| send name, i, j, *args.drop(2) } if args[0].respond_to?(:map) && args[1].respond_to?(:map)
-        next args[0].lazy.map{ |i| send name,          i, *args.drop(1) } if args[0].respond_to?(:map)
-        next args[1].lazy.map{ |i| send name, args[0], i, *args.drop(2) } if args[1].respond_to?(:map)
-        block.call *args
+        case args.map{ |i| i.respond_to? :map }
+          when [true] ; args.first.lazy.map &method(name)
+          when [true, true] ; args.first.lazy.zip(args.last).map{ |i, j| send name, i, j }
+          when [true, false] ; args.first.lazy.map{ |i| send name, i, args.last }
+          when [false, true] ; args.last.lazy.map{ |i| send name, args.first, i }
+        else
+          block.call *args
+        end
       end
     end
   end
@@ -16,10 +20,9 @@ module MLL
   def self.define_orderless_function name, &block
     (class << self; self end).class_eval do # http://stackoverflow.com/a/12792313/322020
       define_method name do |*args|
-        next args[0].lazy.zip(args[1]).map{ |i,j| send name, i, j, *args.drop(2) } if args[0].respond_to?(:map) && args[1].respond_to?(:map)
-        next args[0].lazy.map{ |i| send name,          i, *args.drop(1) } if args[0].respond_to?(:map)
-        next args[1].lazy.map{ |i| send name, args[0], i, *args.drop(2) } if args[1].respond_to?(:map)
-        block.call *args
+        args.inject do |memo, obj|
+          block.call memo, obj
+        end
       end
     end
   end
@@ -72,16 +75,19 @@ module MLL
   define_listable_function :divide do |a, b|
     a / b
   end
-  define_orderless_function :times do |*args|
-    args.inject :*
+  define_listable_function :_times do |a, b|
+    a * b
+  end
+  define_orderless_function :times do |a, b|
+    _times a, b
   end
 
   def self.subdivide *args
     case args.size
-    when 1 ; subdivide 1, args[0]
-    when 2 ; subdivide 0, args[0], args[1]
-    when 3 ; range(args[0], args[1], (args[1] - args[0]) * 1.0 / args[2])
-    # when 3 ; args[0] + divide(times(1.0, args[1] - args[0], range(0, args[2])), args[2])
+      when 1 ; subdivide 1, args[0]
+      when 2 ; subdivide 0, args[0], args[1]
+      when 3 ; range(args[0], args[1], (args[1] - args[0]) * 1.0 / args[2])
+      # when 3 ; args[0] + divide(times(1.0, args[1] - args[0], range(0, args[2])), args[2])
     else
       raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)")
     end
