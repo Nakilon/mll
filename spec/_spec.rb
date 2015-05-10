@@ -67,6 +67,8 @@ describe MLL do
 
       end
 
+      # TODO common tests for threading functions like times, plus, etc.
+
       # http://reference.wolfram.com/language/ref/Times.html
       describe "#times" do
 
@@ -90,6 +92,45 @@ describe MLL do
           end
 
         end
+
+      end
+
+      # http://reference.wolfram.com/language/ref/Plus.html
+      describe "#plus" do
+
+        describe "Basic Examples" do
+
+          example "plus(n1, n2, n3)" do
+            expect(MLL::plus(2,3,4)).to eq 9
+          end
+          example "plus([n1, n2, n3], n)" do
+            expect(MLL::plus([3,4,5],2)).to be_a Enumerator
+            expect(MLL::plus([3,4,5],2).to_a).to eq [5,6,7]
+          end
+          example "plus(n1, n2, [n3, n4])" do
+            expect(MLL::plus(2,3,[4,5])).to be_a Enumerator
+            expect(MLL::plus(2,3,[4,5]).to_a).to eq [9,10]
+          end
+          example "plus(list, list)" do
+            expect(MLL::plus([10,20,30],[1,2,3])).to be_a Enumerator
+            expect(MLL::plus([10,20,30],[1,2,3]).to_a).to eq [11,22,33]
+          end
+          example "plus(list_of_lists, n)" do
+            expect(MLL::plus([[1,2],[3,4]],5)).to be_a Enumerator
+            expect(MLL::plus([[1,2],[3,4]],5).to_a.map(&:to_a)).to eq [[6,7],[8,9]]
+          end
+          example "plus(list_of_lists, list_of_lists)" do
+            expect(MLL::plus([[1,2],[3,4]],[[5,6],[7,8]])).to be_a Enumerator
+            expect(MLL::plus([[1,2],[3,4]],[[5,6],[7,8]]).to_a.map(&:to_a)).to eq [[6,8],[10,12]]
+          end
+          example "plus([[n1, n2], [n3, n4]], [n5, n6])" do
+            expect(MLL::plus([[1,2],[3,4]],[5,6])).to be_a Enumerator
+            expect(MLL::plus([[1,2],[3,4]],[5,6]).to_a.map(&:to_a)).to eq [[6,7],[9,10]]
+          end
+
+        end
+
+        # TODO "Accumulate makes a cumulative sum:"
 
       end
 
@@ -285,3 +326,9 @@ end
 
       # http://reference.wolfram.com/language/guide/HandlingArraysOfData.html
       # http://reference.wolfram.com/language/guide/ComputationWithStructuredDatasets.html
+
+__END__
+
+Table   Array
+Times   Product
+Plus    Total   Sum?

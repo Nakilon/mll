@@ -72,22 +72,18 @@ module MLL
     end
   end
 
-  define_listable_function :divide do |a, b|
-    a / b
-  end
-  define_listable_function :_times do |a, b|
-    a * b
-  end
-  define_orderless_function :times do |a, b|
-    _times a, b
-  end
+  define_listable_function (:divide) { |a, b| a / b }
+  define_listable_function (:_times) { |a, b| a * b }
+  define_orderless_function (:times) { |a, b| _times a, b }
+  define_listable_function (:_plus) { |a, b| a + b }
+  define_orderless_function (:plus) { |a, b| _plus a, b }
 
   def self.subdivide *args
     case args.size
       when 1 ; subdivide 1, args[0]
       when 2 ; subdivide 0, args[0], args[1]
-      when 3 ; range(args[0], args[1], (args[1] - args[0]) * 1.0 / args[2])
-      # when 3 ; args[0] + divide(times(1.0, args[1] - args[0], range(0, args[2])), args[2])
+      # when 3 ; range(args[0], args[1], (args[1] - args[0]) * 1.0 / args[2])
+      when 3 ; plus args[0], divide(times(1.0, args[1] - args[0], range(0, args[2])), args[2])
     else
       raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)")
     end
