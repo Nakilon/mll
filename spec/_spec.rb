@@ -1,11 +1,26 @@
 require_relative File.join "..", "lib", "mll"
 
 
-# PERMANENT TODO test all implemented exceptions
-# PERMANENT TODO test all types returned (not actually all but about lazyness)
+# PERMATODO test all implemented exceptions
+# PERMATODO test all types returned (not actually all but about lazyness)
+# PERMATODO check for "Details" paragraphs to make more trivial examples
+# PERMATODO leave here only useful tests, not demostrations -- move them to README.rb
+# PERMATODO single element Arrays tests
+# PERMATODO move Properties & Relations to some separate contexts maybe
 
+# TODO test all implemented exceptions
+# TODO test all types returned (not actually all but about lazyness)
 # TODO check for "Details" paragraphs to make more trivial examples
+# TODO leave here only useful tests, not demostrations -- move them to README.rb
+# TODO single element Arrays tests
+# TODO move Properties & Relations to some separate contexts maybe
 
+# TODO @fraggedICE wishes using Rational -- would also allow implementing more examples
+# TODO rake task for appending TODOs and pendings to README.rb
+# TODO rename examples according to their description not content
+# TODO elegantly get rid of repetitive type checks
+# TODO implement #power for use in unittests
+# TODO let(:fake_lambda){ ->(*args){fail} } ?
 
 # http://reference.wolfram.com/language/guide/LanguageOverview.html
 describe MLL do
@@ -65,11 +80,6 @@ describe MLL do
 
         describe "Applications" do
 
-          example "foldlist(divide, 1, range(10))" do
-            pending "#foldlist is yet to be implemented"
-            fail
-          end
-
           # TODO: "Successive ratios in a list:"
 
         end
@@ -80,7 +90,7 @@ describe MLL do
             pending "#nestlist is yet to be implemented"
             fail
           end
-          example "table(divide, n1, n2)" do
+          example "table(function, n1, n2)" do
             expect(MLL::table(MLL.method(:divide), [[3,6]], 4.0)).to be_a Array
             expect(MLL::table(MLL.method(:divide), [[6]], 4.0)).to eq [[6.0,3.0,2.0,1.5]]
           end
@@ -165,6 +175,66 @@ describe MLL do
 
     # http://reference.wolfram.com/language/guide/ConstructingLists.html
     describe "Constructing Lists" do
+
+      # http://reference.wolfram.com/language/ref/Table.html
+      describe "#table" do
+
+        describe "Basic Examples" do
+
+          example "table(lambda, n)" do
+            expect(MLL::table(->(i){ i**2 }, 10)).to be_a Array
+            expect(MLL::table(->(i){ i**2 }, 10)).to eq [1,4,9,16,25,36,49,64,81,100]
+          end
+          example "table(lambda, [min, max, step])" do
+            expect(MLL::table(->(i){ i+2 }, [0, 20, 2])).to be_a Array
+            expect(MLL::table(->(i){ i+2 }, [0, 20, 2])).to eq [2,4,6,8,10,12,14,16,18,20,22]
+          end
+          example "table(lambda, n1, n2)" do
+            # TODO example to README.rb about multiplication table
+            expect(MLL::table(->(i,j){ 10*i + j }, 4, 3)).to be_a Array
+            expect(MLL::table(->(i,j){ 10*i + j }, 4, 3)).to eq [[11,12,13],[21,22,23],[31,32,33],[41,42,43]]
+          end
+          example "table(lambda, n1, min..max, [max, min, -step])" do
+            expect(MLL::table(->(i,j,k){ [i,j,k] }, 3, 2..3, [5, 1, -2])).to be_a Array
+            expect(MLL::table(->(i,j,k){ [i,j,k] }, 3, 2..3, [5, 1, -2])).to eq \
+            [
+             [[[1, 2, 5], [1, 2, 3], [1, 2, 1]], [[1, 3, 5], [1, 3, 3], [1, 3, 1]]],
+             [[[2, 2, 5], [2, 2, 3], [2, 2, 1]], [[2, 3, 5], [2, 3, 3], [2, 3, 1]]],
+             [[[3, 2, 5], [3, 2, 3], [3, 2, 1]], [[3, 3, 5], [3, 3, 3], [3, 3, 1]]]
+            ]
+          end
+
+          example "matrix_form table(lambda, n1, n2)" do
+            pending "#matrix_form is yet to be implemented"
+            expect(MLL::matrix_form MLL::table(->(i,j){ 10*i + j }, 4, 3)).to eq "
+            "
+          end
+
+        end
+
+        describe "Scope" do
+
+          # TODO: "Make a triangular array:"
+
+          example "table(lambda, [list1], [list2])" do
+            expect(MLL::table(->(base, power){ base ** power }, [[1,2,4]], [[1,3,4]])).to be_a Array
+            expect(MLL::table(->(base, power){ base ** power }, [[1,2,4]], [[1,3,4]])).to eq [[1,1,1],[2,8,16],[4,64,256]]
+            expect(MLL::table(MLL::method(:plus), [[1]], [[2]])).to be_a Array
+            expect(MLL::table(MLL::method(:plus), [[1]], [[2]])).to eq [[3]]
+          end
+
+        end
+
+        describe "Applications" do
+
+          example "column table(binomial, )" do
+            pending "#binomial and #column are yet to be implemented"
+            fail
+          end
+
+        end
+
+      end
 
       # http://reference.wolfram.com/language/ref/Range.html
       describe "#range" do
@@ -251,66 +321,6 @@ describe MLL do
 
       end
 
-      # http://reference.wolfram.com/language/ref/Table.html
-      describe "#table" do
-
-        describe "Basic Examples" do
-
-          example "table(lambda, n)" do
-            expect(MLL::table(->(i){ i**2 }, 10)).to be_a Array
-            expect(MLL::table(->(i){ i**2 }, 10)).to eq [1,4,9,16,25,36,49,64,81,100]
-          end
-          example "table(lambda, [min, max, step])" do
-            expect(MLL::table(->(i){ i+2 }, [0, 20, 2])).to be_a Array
-            expect(MLL::table(->(i){ i+2 }, [0, 20, 2])).to eq [2,4,6,8,10,12,14,16,18,20,22]
-          end
-          example "table(lambda, n1, n2)" do
-            # TODO example to README.rb about multiplication table
-            expect(MLL::table(->(i, j){ 10*i + j }, 4, 3)).to be_a Array
-            expect(MLL::table(->(i, j){ 10*i + j }, 4, 3)).to eq [[11,12,13],[21,22,23],[31,32,33],[41,42,43]]
-          end
-          example "table(lambda, n1, min..max, [max, min, -step])" do
-            expect(MLL::table(->(i,j,k){ [i,j,k] }, 3, 2..3, [5, 1, -2])).to be_a Array
-            expect(MLL::table(->(i,j,k){ [i,j,k] }, 3, 2..3, [5, 1, -2])).to eq \
-            [
-             [[[1, 2, 5], [1, 2, 3], [1, 2, 1]], [[1, 3, 5], [1, 3, 3], [1, 3, 1]]],
-             [[[2, 2, 5], [2, 2, 3], [2, 2, 1]], [[2, 3, 5], [2, 3, 3], [2, 3, 1]]],
-             [[[3, 2, 5], [3, 2, 3], [3, 2, 1]], [[3, 3, 5], [3, 3, 3], [3, 3, 1]]]
-            ]
-          end
-
-          example "matrix_form table(lambda, n1, n2)" do
-            pending "#matrix_form is yet to be implemented"
-            expect(MLL::matrix_form MLL::table(->(i, j){ 10*i + j }, 4, 3)).to eq "
-            "
-          end
-
-        end
-
-        describe "Scope" do
-
-          # TODO: "Make a triangular array:"
-
-          example "table(lambda, [list1], [list2])" do
-            expect(MLL::table(->(base, power){ base ** power }, [[1,2,4]], [[1,3,4]])).to be_a Array
-            expect(MLL::table(->(base, power){ base ** power }, [[1,2,4]], [[1,3,4]])).to eq [[1,1,1],[2,8,16],[4,64,256]]
-            expect(MLL::table(->(i,j){ i+j }, [[1]], [[2]])).to be_a Array
-            expect(MLL::table(->(i,j){ i+j }, [[1]], [[2]])).to eq [[3]]
-          end
-
-        end
-
-        describe "Applications" do
-
-          example "column table(binomial, )" do
-            pending "#binomial and #column are yet to be implemented"
-            fail
-          end
-
-        end
-
-      end
-
       # http://reference.wolfram.com/language/ref/Subdivide.html
       describe "#subdivide" do
 
@@ -333,21 +343,217 @@ describe MLL do
 
       end
 
+      # http://reference.wolfram.com/language/ref/NestList.html
+      describe "#nest_list" do
+
+        example "#nest_list  gives a list of length n+1" do
+          expect(MLL::nest_list(->{}, 0, 5)).to be_a Enumerator
+          expect(MLL::nest_list(->(*args){}, 0, 5).to_a.size).to eq 6
+        end
+
+        describe "Basic Examples" do
+
+          example "'nest_list with #cos starting with 1.0)'" do
+            pending "#cos is yet to be implemented"
+            fail
+          end
+
+        end
+
+        describe "Scope" do
+
+          example "nesting can return a single number" do
+            pending "#sqrt is yet to be implemented"
+            fail
+          end
+
+        end
+
+        describe "Applications" do
+
+          example "powers of 2" do
+            expect(MLL::nest_list(->(i){ 2*i }, 1, 10)).to be_a Enumerator
+            expect(MLL::nest_list(->(i){ 2*i }, 1, 10).to_a).to eq [1,2,4,8,16,32,64,128,256,512,1024]
+          end
+          example "iterates in the  problem" do
+            expect(MLL::nest_list(->(i){ i.even? ? i/2 : (i*3+1)/2 }, 100, 20)).to be_a Enumerator
+            expect(MLL::nest_list(->(i){ i.even? ? i/2 : (i*3+1)/2 }, 100, 20).to_a).to eq [100,50,25,38,19,29,44,22,11,17,26,13,20,10,5,8,4,2,1,2,1]
+          end
+          example "linear congruential pseudorandom generator" do
+            expect(MLL::nest_list(->(i){ (i*59)%101 }, 1, 15)).to be_a Enumerator
+            expect(MLL::nest_list(->(i){ (i*59)%101 }, 1, 15).to_a).to eq [1,59,47,46,88,41,96,8,68,73,65,98,25,61,64,39]
+          end
+          example "random walk" do
+            expect(( r = Random.new(0); MLL::nest_list(->(i){ i+[-1,1][r.rand(2)] }, 0, 20) )).to be_a Enumerator
+            expect(( r = Random.new(0); MLL::nest_list(->(i){ i+[-1,1][r.rand(2)] }, 0, 20).to_a )).to eq [0,-1,0,1,0,1,2,3,4,5,6,7,6,5,6,5,4,3,2,1,2]
+          end
+          example "successively rotate a list" do
+            expect(MLL::nest_list(->(i){ i.rotate 1 }, [1,2,3,4], 4)).to be_a Enumerator
+            expect(MLL::nest_list(->(i){ i.rotate 1 }, [1,2,3,4], 4).to_a).to eq [[1,2,3,4],[2,3,4,1],[3,4,1,2],[4,1,2,3],[1,2,3,4]]
+          end
+
+        end
+
+        describe "Properties & Relations" do
+
+          # TODO "Nest gives the last element of NestList:"
+
+          example "nesting zero times simply returns to the original argument" do
+            expect(MLL::nest_list(->{fail}, 5, 0)).to be_a Enumerator
+            expect(MLL::nest_list(->(*args){fail}, 5, 0).to_a).to eq [5]
+          end
+          example "#fold_list automatically inserts second arguments from a list" do
+            expect(MLL::nest_list(->(i  ){ i*2 }, 3,     4).to_a).to eq \
+                   MLL::fold_list(->(i,j){ i*j }, 3, [2]*4).to_a
+          end
+
+        end
+
+      end
+
     end
 
-    # http://reference.wolfram.com/language/guide/ElementsOfLists.html
-    # http://reference.wolfram.com/language/guide/RearrangingAndRestructuringLists.html
     # http://reference.wolfram.com/language/guide/ApplyingFunctionsToLists.html
-    # http://reference.wolfram.com/language/guide/MathematicalAndCountingOperationsOnLists.html
+    describe "Applying Functions to Lists" do
+
+      describe "#fold_list" do
+
+        describe "Basic Examples" do
+
+          example "fold_list(function, list)" do
+            expect(MLL::fold_list(MLL.method(:plus),[1,2,3,4])).to be_a Enumerator
+            expect(MLL::fold_list(MLL.method(:plus),[1,2,3,4]).to_a).to eq [1,3,6,10]
+          end
+          example "fold_list(function, n, list)" do
+            expect(MLL::fold_list(MLL.method(:plus),5,[1,2,3,4])).to be_a Enumerator
+            expect(MLL::fold_list(MLL.method(:plus),5,[1,2,3,4]).to_a).to eq [5,6,8,11,15]
+          end
+          example "fold_list(lambda, n, list)" do
+            expect(MLL::fold_list(->(base, power){ base ** power },2,[3,2,1])).to be_a Enumerator
+            expect(MLL::fold_list(->(base, power){ base ** power },2,[3,2,1]).to_a).to eq [2,8,64,64]
+          end
+
+        end
+
+        describe "Applications" do
+
+          example "fold_list(function, n, list)" do
+            expect(MLL::fold_list(MLL.method(:times), [*1..10])).to be_a Enumerator
+            expect(MLL::fold_list(MLL.method(:times), [*1..10]).to_a).to eq [1,2,6,24,120,720,5040,40320,362880,3628800]
+          end
+          example "fold_list(lambda, n, list)" do
+            expect(MLL::fold_list(->(a,b){ 10*a + b }, 0, [4,5,1,6,7,8])).to be_a Enumerator
+            expect(MLL::fold_list(->(a,b){ 10*a + b }, 0, [4,5,1,6,7,8]).to_a).to eq [0,4,45,451,4516,45167,451678]
+          end
+          example "fold_list(lambda, n, list)" do
+            expect(( r = Random.new(0); MLL::fold_list(MLL.method(:plus), 0, Array.new(20){ [-1,1][r.rand(2)] }) )).to be_a Enumerator
+            expect(( r = Random.new(0); MLL::fold_list(MLL.method(:plus), 0, Array.new(20){ [-1,1][r.rand(2)] }).to_a )).to eq [0,-1,0,1,0,1,2,3,4,5,6,7,6,5,6,5,4,3,2,1,2]
+          end
+
+          # TODO "Find successively deeper parts in an expression:"
+
+        end
+
+        describe "Properties & Relations" do
+
+          example "#fold_list makes a list of length n+1" do
+            expect(MLL::fold_list(->{}, 0, [*1..10])).to be_a Enumerator
+            expect(MLL::fold_list(->(*args){}, 0, [*1..10]).to_a.size).to eq 11
+          end
+          example "folding with an empty list does not apply the function at all" do
+            expect(MLL::fold_list(->{}, 0, [])).to be_a Enumerator
+            expect(MLL::fold_list(->(*args){}, 0, []).to_a).to eq [0]
+          end
+          example "Ruby#inject gives the last element of #fold_list" do
+            f = ->(i,j){ i+j }
+            expect(MLL::fold_list(f, [1,2,3])).to be_a Enumerator
+            expect(MLL::fold_list(f, [1,2,3]).to_a.last).to eq [1,2,3].inject(&f)
+          end
+          # TODO "Functions that ignore their second argument give the same result as in NestList:"
+          # TODO "Accumulate is equivalent to FoldList with Plus:"
+
+        end
+
+        describe "Neat Examples" do
+
+          example "compute the minimum number of coins of different value needed to make up an amount" do
+            pending "at least #mod is yet to be implemented"
+            fail
+          end
+
+        end
+
+      end
+
+    end
+
+    # TODO http://reference.wolfram.com/language/guide/ElementsOfLists.html
+    # TODO http://reference.wolfram.com/language/guide/RearrangingAndRestructuringLists.html
+    # TODO http://reference.wolfram.com/language/guide/MathematicalAndCountingOperationsOnLists.html
 
   end
 
   # http://reference.wolfram.com/language/guide/FunctionalProgramming.html
+  describe "Functional Programming" do
+
+    # http://reference.wolfram.com/language/guide/FunctionalIteration.html
+    describe "Iteratively Applying Functions" do
+
+      # TODO move #nest_list and #fold_list and others here?
+
+      describe "#nest" do
+
+        describe "Basic Examples" do
+
+          example "the function to nest can be a pure function" do
+            expect(MLL::nest(->(i){ (1+i)**2 }, 1, 3)).to eq 676
+          end
+
+        end
+
+        describe "Scope" do
+
+          example "nesting can return a single number" do
+            pending "#sqrt is yet to be implemented"
+            fail
+          end
+
+        end
+
+        describe "Applications" do
+
+          example "newton iterations for" do
+            pending "need to deal with Rationals first"
+            fail
+          end
+          example "consecutive pairs of Fibonacci numbers" do
+            pending "implement #dot ?"
+            fail
+          end
+
+        end
+
+        describe "Properties & Relations" do
+
+          example "#fold automatically inserts second arguments from a list" do
+            expect(MLL::nest(->(i){       i*2 }, 3, 4)).to eq \
+                 ([2]*4).inject(3){ |i,j| i*j }
+          end
+
+        end
+
+        # TODO neat graphic examples
+
+      end
+
+    end
+
+  end
 
 end
 
-      # http://reference.wolfram.com/language/guide/HandlingArraysOfData.html
-      # http://reference.wolfram.com/language/guide/ComputationWithStructuredDatasets.html
+# TODO http://reference.wolfram.com/language/guide/HandlingArraysOfData.html
+# TODO http://reference.wolfram.com/language/guide/ComputationWithStructuredDatasets.html
 
 __END__
 
