@@ -16,6 +16,28 @@ describe MLL do
     # NO URL
     describe "Mathematics & Operators" do
 
+      # http://reference.wolfram.com/language/ref/Subtract.html
+      describe "#subtract" do
+
+        describe "Basic Examples" do
+
+          example "subtract(n1, n2)" do
+            expect(MLL::subtract(10,3)).to eq 7
+          end
+
+        end
+
+        describe "Scope" do
+
+          example "subtract(list, n)" do
+            expect(MLL::subtract([1,2,3,4],0.5)).to be_a Enumerator
+            expect(MLL::subtract([1,2,3,4],0.5).to_a).to eq [0.5,1.5,2.5,3.5]
+          end
+
+        end
+
+      end
+
       # http://reference.wolfram.com/language/ref/Divide.html
       describe "#divide" do
 
@@ -69,32 +91,6 @@ describe MLL do
 
       # TODO common tests for threading functions like times, plus, etc.
 
-      # http://reference.wolfram.com/language/ref/Times.html
-      describe "#times" do
-
-        describe "Basic Examples" do
-
-          example "times(n1, n2, n3)" do
-            # expect(MLL::times(2,3,4)).to be_a Fixnum
-            expect(MLL::times(2,3,4)).to eq 24
-          end
-          example "times(n, [n1, n2, n3])" do
-            expect(MLL::times(2,[3,4,5])).to be_a Enumerator
-            expect(MLL::times(2,[3,4,5]).to_a).to eq [6,8,10]
-          end
-          example "times(n1, n2, [n3, n4])" do
-            expect(MLL::times(2,3,[4,5])).to be_a Enumerator
-            expect(MLL::times(2,3,[4,5]).to_a).to eq [24,30]
-          end
-          example "times([[n1, n2], [n3, n4]], [n5, n6])" do
-            expect(MLL::times([[1,2],[3,4]],[5,6])).to be_a Enumerator
-            expect(MLL::times([[1,2],[3,4]],[5,6]).to_a.map(&:to_a)).to eq [[5,10],[18,24]]
-          end
-
-        end
-
-      end
-
       # http://reference.wolfram.com/language/ref/Plus.html
       describe "#plus" do
 
@@ -131,6 +127,32 @@ describe MLL do
         end
 
         # TODO "Accumulate makes a cumulative sum:"
+
+      end
+
+      # http://reference.wolfram.com/language/ref/Times.html
+      describe "#times" do
+
+        describe "Basic Examples" do
+
+          example "times(n1, n2, n3)" do
+            # expect(MLL::times(2,3,4)).to be_a Fixnum
+            expect(MLL::times(2,3,4)).to eq 24
+          end
+          example "times(n, [n1, n2, n3])" do
+            expect(MLL::times(2,[3,4,5])).to be_a Enumerator
+            expect(MLL::times(2,[3,4,5]).to_a).to eq [6,8,10]
+          end
+          example "times(n1, n2, [n3, n4])" do
+            expect(MLL::times(2,3,[4,5])).to be_a Enumerator
+            expect(MLL::times(2,3,[4,5]).to_a).to eq [24,30]
+          end
+          example "times([[n1, n2], [n3, n4]], [n5, n6])" do
+            expect(MLL::times([[1,2],[3,4]],[5,6])).to be_a Enumerator
+            expect(MLL::times([[1,2],[3,4]],[5,6]).to_a.map(&:to_a)).to eq [[5,10],[18,24]]
+          end
+
+        end
 
       end
 

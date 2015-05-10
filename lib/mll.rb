@@ -72,11 +72,12 @@ module MLL
     end
   end
 
+  define_listable_function (:subtract) { |a, b| a - b }
   define_listable_function (:divide) { |a, b| a / b }
-  define_listable_function (:_times) { |a, b| a * b }
-  define_orderless_function (:times) { |a, b| _times a, b }
   define_listable_function (:_plus) { |a, b| a + b }
   define_orderless_function (:plus) { |a, b| _plus a, b }
+  define_listable_function (:_times) { |a, b| a * b }
+  define_orderless_function (:times) { |a, b| _times a, b }
 
   def self.subdivide *args
     case args.size
