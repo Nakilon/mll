@@ -31,7 +31,7 @@
                             [8, 16, 24, 32, 40, 48, 56, 64, 72],
                             [9, 18, 27, 36, 45, 54, 63, 72, 81]]
 
-    # here is `Listable' magic, alloing to zip arrays
+    # here is `Listable' magic, allowing to zip arrays
     #   of different dimensions with basic operations
     MLL::times [[1,2],[3,4]], [5,6] # => [[5,10], [18,24]]
     # .times     means  *
@@ -45,6 +45,7 @@
     MLL::nest_list ->(i){ i.even? ? i/2 : (i*3+1)/2 }, 20, 10
                               # => [20, 10, 5, 8, 4, 2, 1, 2, 1, 2, 1]
 
+    # http://stackoverflow.com/q/1475808/322020
     MLL::fold_list ->(a, b){ 10*a + b }, 0, [4,5,1,6,7,8]
                               # => [0, 4, 45, 451, 4516, 45167, 451678]
 
@@ -68,14 +69,16 @@ or
 
 ```
 module MLL
-  def self.fold_list f, x, list = nil
-    # TODO teach it to accept Range ?
-    # TODO use Ruby#inject ?
-  def self.table f, *args
-    [].tap do |result|
-      }]].tap do |stack|
-        stack.each do |ai, ri|
-          # TODO try to make #table lazy (Enumerator instead of Array)
+  def self.fold_list
+    lambda do |f, x, list = nil|
+      # TODO teach it to accept Range ?
+      # TODO use Ruby#inject ?
+  def self.table
+    lambda do |f, *args|
+      [].tap do |result|
+        }]].tap do |stack|
+          stack.each do |ai, ri|
+            # TODO try to make #table lazy (Enumerator instead of Array)
 ```
 
 #### spec/_spec.rb
