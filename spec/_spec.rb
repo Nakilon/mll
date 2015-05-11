@@ -16,11 +16,12 @@ require_relative File.join "..", "lib", "mll"
 # TODO move Properties & Relations to some separate contexts maybe
 
 # TODO @fraggedICE wishes using Rational -- would also allow implementing more examples
-# TODO rake task for appending TODOs and pendings to README.rb
 # TODO rename examples according to their description not content
 # TODO elegantly get rid of repetitive type checks
 # TODO implement #power for use in unittests
 # TODO let(:fake_lambda){ ->(*args){fail} } ?
+# TODO include MLL
+
 
 # http://reference.wolfram.com/language/guide/LanguageOverview.html
 describe MLL do

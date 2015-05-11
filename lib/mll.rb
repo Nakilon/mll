@@ -19,7 +19,7 @@ module MLL
   def self.fold_list f, x, list = nil
     # TODO teach it to accept Range ?
     x, *list = x unless list
-    # use Ruby#inject ?
+    # TODO use Ruby#inject ?
     Enumerator.new do |e|
       e << x
       list.each do |i|
@@ -44,7 +44,7 @@ module MLL
             else
               [*ai.dup, i].tap{ |t| stack << [t, ri.drop(1)] }
             end
-          }#.to_a # WTF
+          }
         end
       end
     end
