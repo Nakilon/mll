@@ -223,67 +223,6 @@ describe MLL do
 
       end
 
-=begin #power is Listable but not Orderless, but should accept *args
-      # http://reference.wolfram.com/language/ref/Power.html
-      describe "#power" do
-
-        describe "Details" do
-
-          # TODO what about #power[], #power[0] #power[1] ?
-
-          example "#power[x,y,z,…] is taken to be #power[x,#power[y,z,…]]" do
-            expect(power[2,3,4]).to eq [2,3,4].inject(&power)
-          end
-
-        end
-
-        describe "Basic Examples" do
-
-          example "powers number" do
-            expect(power[2,3,4]).to eq 4096
-          end
-          example "threads element-wise over lists" do
-            expect(power[[2,3,4,5],3]).to be_a Enumerator
-            expect(power[[2,3,4,5],3].to_a).to eq [8,27,64,125]
-            expect(power[4,3,[2,1]]).to be_a Enumerator
-            expect(power[4,3,[2,1]].to_a).to eq [8,27,64,125]
-
-            expect(power[[1,2,3],[3,2,1]]).to be_a Enumerator
-            expect(power[[1,2,3],[3,2,1]].to_a).to eq [1,4,3]
-          end
-
-        end
-
-        describe "Scope" do
-        
-          example "threads element-wise over lists and matrices" do
-            expect(power[[[1,2],[4,3]],2]).to be_a Enumerator
-            expect(power[[[1,2],[4,3]],2].to_a).to eq [[1,4],[16,9]]
-          end
-        
-        end
-
-        describe "Possible Issues" do
-
-          example "applies element-wise to matrices" do
-            expect(power[[[1,2],[3,4]],2]).to be_a Enumerator
-            expect(power[[[1,2],[3,4]],2]).to eq [[1,4],[9,16]]
-          end
-
-        end
-
-        describe "Neat Examples" do
-
-          example "generate successive power towers" do
-            expect(nest_list[power, 2..4]).to be_a Enumerator
-            expect(nest_list[power, 2..4].to_a).to eq [2,8,4096]
-          end
-
-        end
-
-      end
-=end
-
     end
 
   end

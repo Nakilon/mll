@@ -2,13 +2,17 @@
 
 ## What
 
-Этот гем не ставит перед собой цель полностью имитировать типы данных, синтаксис Wolfram Mathematica Language, или научить Ruby крутым визуализациям. Целью является вложить в Ruby мощь стандартной библиотеки. В перспективе визуализация возможна при помощи других гемов.
+This gem isn't supposed to mimic all data types, exact syntax of Wolfram Mathematica or make Ruby able to make the same visualisations.
+
+The main goal is to make Ruby more powerful by including the most used functions, that Ruby lacks, such as `Table[]`, `FoldList[]`, etc. Visualisations are possible later by using additional gems.
 
 ## Why
 
-1. Важной является реализация https://reference.wolfram.com/language/ref/Listable.html: автоматическое применение функции ко всем элементам аргумента, если тот является List-ом (Array-ем в среде Ruby).
-2. `::range`, в отличие от рубишного, может иметь отрицательный step.
-3. `::table`, в отличие от рубишного `.map`, может создавать многомерные массивы одним вызовом, а не только вложенными.
+1. One of the most useful things is automatic zipping vectors (`Array`s) when you apply scalar functions to them. https://reference.wolfram.com/language/ref/Listable.html
+2. unlike Ruby's `Range` class, `::range` can handle negative `step` and even have `float` starting value
+3. unlike Ruby's `Array#map`, `::table` can create multidimensional arrays with a single call, not nested
+4. `#fold_list` was wanted [here](http://stackoverflow.com/q/1475808/322020) in Ruby while being already implemented as [FoldList[]](http://reference.wolfram.com/language/ref/FoldList.html) in Mathematica and [scanl](http://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#v:scanl) in Haskell
+5. `#nest` (n times) and `#nest_list` for repetitive applying the same function -- `#nest_while` and `#nest_while_list` are going to be implemented later
 
 ## How
 
@@ -31,7 +35,6 @@
                              [8, 16, 24, 32, 40, 48, 56, 64, 72],
                              [9, 18, 27, 36, 45, 54, 63, 72, 81]]
 
-    # http://stackoverflow.com/q/1475808/322020
     MLL::fold_list[ MLL::times, MLL::range[10] ]
                        # => [1,2,6,24,120,720,5040,40320,362880,3628800]
 
@@ -48,12 +51,12 @@
     MLL::nest_list[ ->(i){ i.even? ? i/2 : (i*3+1)/2 }, 20, 10 ]
                        # => [20, 10, 5, 8, 4, 2, 1, 2, 1, 2, 1]
 
-    MLL::subdivide[ 5, 10, 4 ]
-                       # => [5.0, 6.25, 7.5, 8.75, 10.0]
-    
     MLL::fold_list[ ->(a,b){ 10*a + b }, 0, [4,5,1,6,7,8] ]
                        # => [0,4,45,451,4516,45167,451678]
 
+    MLL::subdivide[ 5, 10, 4 ]
+                       # => [5.0, 6.25, 7.5, 8.75, 10.0]
+    
 Note that to see some of above examples working you need `.to_a`, `.map(&:to_a)` or even `.to_a.map(&:to_a)` since lazyness is intensively used.
 
 ## Installation
@@ -93,41 +96,18 @@ module MLL
 # TODO @fraggedICE wishes using Rational -- would also allow implementing more examples
 # TODO elegantly get rid of repetitive type checks
 # TODO ? let(:fake_lambda){ ->(*args){fail} }
-=begin #power is Listable but not Orderless, but should accept *args
-```
- Orderless, but should accept *args
-```
-s according to their description not content
-# TODO elegantly get rid of repetitive type checks
-# TODO ? implement #power for use in unittests
-# TODO ? let(:fake_lambda){ ->(*args){fail} }
 describe MLL do
   describe "List Manipulation" do
     describe "Constructing Lists" do
       describe "#table" do
-        describe "Basic Examples" do
-          example "table(lambda, n1, n2)" do
-            # TODO example to README.rb about multiplication table
         describe "Scope" do
           # TODO: "Make a triangular array:"
       describe "#range" do
         # TODO take from docs more examples that involve other functions
-        describe "Neat Examples" do
-          example "range(range(range(n)))" do
-            # TODO do the same .tap thing in other type tests
-          # TODO Nest[Range,3,6]
-        # TODO "Find an inverse permutation:"
-        # TODO "Use Range or Span (;;) as Part specification:"
-      describe "#nest_list" do
-        describe "Properties & Relations" do
-          # TODO "Nest gives the last element of NestList:"
     describe "Applying Functions to Lists" do
       describe "#fold_list" do
         describe "Applications" do
-          # TODO "Find successively deeper parts in an expression:"
-        describe "Properties & Relations" do
-          # TODO "Functions that ignore their second argument give the same result as in NestList:"
-          # TODO "Accumulate is equivalent to FoldList with Plus:"
+          # TODO maybe move it to README.md
     # TODO http://reference.wolfram.com/language/guide/ElementsOfLists.html
     # TODO http://reference.wolfram.com/language/guide/RearrangingAndRestructuringLists.html
     # TODO http://reference.wolfram.com/language/guide/MathematicalAndCountingOperationsOnLists.html
