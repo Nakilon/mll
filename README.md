@@ -10,7 +10,7 @@ The main goal is to make Ruby more powerful by including the most used functions
 
 1. One of the most useful things is automatic zipping vectors (`Array`s) when you apply scalar functions to them. https://reference.wolfram.com/language/ref/Listable.html
 2. unlike Ruby's `Range` class, `::range` can handle negative `step` and even have `float` starting value
-3. unlike Ruby's `Array#map`, `::table` can create multidimensional arrays with a single call, not nested
+3. unlike Ruby's `Array.new`, `::table` can create multidimensional arrays with a single call, not nested
 4. `#fold_list` was wanted [here](http://stackoverflow.com/q/1475808/322020) in Ruby while being already implemented as [FoldList[]](http://reference.wolfram.com/language/ref/FoldList.html) in Mathematica and [scanl](http://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#v:scanl) in Haskell
 5. `#nest` (n times) and `#nest_list` for repetitive applying the same function -- `#nest_while` and `#nest_while_list` are going to be implemented later
 
@@ -24,7 +24,7 @@ The main goal is to make Ruby more powerful by including the most used functions
                        # => [[1, 3, 1],
                              [0, 2, 0],
                              [1, 3, 1]]
-    MLL::table[ MLL.method(:times), 9, 9 ]
+    MLL::table[ MLL::times, 9, 9 ]
                        # => [[1,  2,  3,  4,  5,  6,  7,  8,  9],
                              [2,  4,  6,  8, 10, 12, 14, 16, 18],
                              [3,  6,  9, 12, 15, 18, 21, 24, 27],
@@ -57,7 +57,7 @@ The main goal is to make Ruby more powerful by including the most used functions
     MLL::subdivide[ 5, 10, 4 ]
                        # => [5.0, 6.25, 7.5, 8.75, 10.0]
     
-Note that to see some of above examples working you need `.to_a`, `.map(&:to_a)` or even `.to_a.map(&:to_a)` since lazyness is intensively used.
+Note that to see some of above examples working in the same way you need `.to_a`, `.map(&:to_a)` or even `.to_a.map(&:to_a)` since lazyness is intensively used.
 
 ## Installation
 
