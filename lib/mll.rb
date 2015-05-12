@@ -22,8 +22,7 @@ module MLL
 
   def self.fold_list
     lambda do |f, x, list = nil|
-      # TODO teach it to accept Range ?
-      x, *list = x unless list
+      x, *list = x.to_a unless list
       # TODO use Ruby#inject ?
       Enumerator.new do |e|
         e << x
@@ -75,6 +74,7 @@ module MLL
     end
   end
 
+  # TODO not sure if we need any other kind of Listability except of #range[[Array]]
   define_listable_function :range do |*args|
     case args.size
     when 1 ; range[1, args[0]] # TODO do smth with #table(-n)
@@ -98,17 +98,18 @@ module MLL
     end
   end
 
-  define_listable_function (:subtract) { |a, b| a - b }
-  define_listable_function (:divide)   { |a, b| a / b }
-  define_listable_function (:_plus)    { |a, b| a + b }
-  define_listable_function (:_times)   { |a, b| a * b }
+  define_listable_function(:subtract) { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] - args[1] }
+  define_listable_function(:divide)   { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] / args[1] }
+  define_listable_function(:_plus)    { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] + args[1] }
+  define_listable_function(:_times)   { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] * args[1] }
+  # define_listable_function (:power)   { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] ** args[1] }
 
   # http://reference.wolfram.com/language/ref/Orderless.html
-  def self.define_orderless_function name, &block
+  def self.define_orderless_function name, start, &block
     (class << self; self end).class_eval do # http://stackoverflow.com/a/12792313/322020
       define_method name do
        lambda do |*args|
-          args.inject do |memo, obj|
+          args.inject(start) do |memo, obj|
             block.call memo, obj
           end
         end
@@ -116,17 +117,17 @@ module MLL
     end
   end
 
-  define_orderless_function (:plus)  { |a, b| _plus.call  a, b }
-  define_orderless_function (:times) { |a, b| _times.call a, b }
+  define_orderless_function(:plus,  0) { |a, b| _plus.call  a, b }
+  define_orderless_function(:times, 1) { |a, b| _times.call a, b }
 
   def self.subdivide
     lambda do |*args|
       case args.size
         when 1 ; subdivide[1, args[0]]
         when 2 ; subdivide[0, args[0], args[1]]
-        when 3 ; range[args[0], args[1], (args[1] - args[0]) * 1.0 / args[2]]
-        ## using only pure Ruby methods makes unittests more reliable
-        # when 3 ; plus args[0], divide(times(1.0, args[1] - args[0], range(0, args[2])), args[2])
+        when 3
+          # raise ArgumentError.new("can't divide into 0 parts") if args[2].zero?
+          range[args[0], args[1], (args[1] - args[0]) * 1.0 / args[2]]
       else
         raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)")
       end
