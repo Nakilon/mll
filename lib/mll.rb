@@ -19,7 +19,8 @@ module MLL
     end
 
     def tally
-      lambda do |list, test = ->(i,j){ i == j } | # implement #sameq ?
+      lambda do |list, test = nil | # implement #sameq ?
+        return Hash[ list.group_by{ |i| i }.map{ |k, v| [k, v.size] } ] unless test
         Hash.new{ 0 }.tap do |result|
           list.each do |item|
             result[
@@ -70,9 +71,9 @@ module MLL
         depths = Range.new(*depths) if depths.size == 2
         depths = Range.new(1,depths) if depths.is_a? Integer
         g = lambda do |list, depth|
-          next list unless list.respond_to? :map
+          next list unless list.is_a? Array
           temp = list.lazy.map{ |i| g[i, depth + 1] }
-          temp = temp.map &f if depths.include? depth
+          temp = temp.lazy.map &f if depths.include? depth
           temp
         end
         g[list, 1]
