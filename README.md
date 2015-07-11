@@ -96,6 +96,8 @@ or
 ```
 module MLL
   class << self
+    def dimensions
+      # TODO refactor into depth-first traversing
     def fold_list
       lambda do |f, x, list = nil|
         # TODO use Ruby#inject ?
@@ -145,7 +147,6 @@ describe MLL do
           # TODO #mapthread ?
           # TODO #mapindexed ?
           # TODO "negative levels"
-    # TODO http://reference.wolfram.com/language/guide/ElementsOfLists.html
     # TODO http://reference.wolfram.com/language/guide/RearrangingAndRestructuringLists.html
     # TODO http://reference.wolfram.com/language/guide/MathematicalAndCountingOperationsOnLists.html
   describe "Functional Programming" do

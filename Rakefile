@@ -34,4 +34,4 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   t.verbose = false
 end
 
-task :default => %w{ todo spec }
+task :default => %w{ spec todo }

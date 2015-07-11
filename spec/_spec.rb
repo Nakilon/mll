@@ -514,7 +514,6 @@ describe MLL do
           example "#nest gives the last element of #nest_list" do
             expect(nest_list[->(i){ i*2 }, 3, 4].to_a.last).to eq nest[->(i){ i*2 }, 3, 4]
           end
-
           example "nesting zero times simply returns to the original argument" do
             expect(nest_list[->{fail}, 5, 0]).to be_a Enumerator
             expect(nest_list[->(*args){fail}, 5, 0].to_a).to eq [5]
@@ -692,7 +691,45 @@ describe MLL do
 
     end
 
-    # TODO http://reference.wolfram.com/language/guide/ElementsOfLists.html
+    # http://reference.wolfram.com/language/guide/ElementsOfLists.html
+    describe "Elements of Lists" do
+
+      describe "#dimensions" do
+
+        describe "Basic Examples:" do
+
+          example "dimensions of a matrix" do
+            expect(dimensions[[[1,2,3],[4,5,6]]]).to be_a Enumerator
+            expect(dimensions[[[1,2,3],[4,5,6]]].to_a).to eq [2,3]
+          end
+          example "#dimensions counts only dimensions at which an expression is not 'ragged'" do
+            expect(dimensions[[[1,2,3],[4,5],[]]]).to be_a Enumerator
+            expect(dimensions[[[1,2,3],[4,5],[]]].to_a).to eq [3]
+          end
+          example "works with arrays of any depth" do
+            expect(dimensions[[[[[1,2]]]]]).to be_a Enumerator
+            expect(dimensions[[[[[1,2]]]]].to_a).to eq [1,1,1,2]
+          end
+          example "give dimensions only down to level 2" do
+            expect(dimensions[[[[[1,2]]]], 2]).to be_a Enumerator
+            expect(dimensions[[[[[1,2]]]], 2].to_a).to eq [1,1]
+          end
+
+        end
+
+        describe "Properties & Relations" do
+
+          example "???" do
+            expect(dimensions[table[->(*){ 0 }, 2,1,4,3]]).to be_a Enumerator
+            expect(dimensions[table[->(*){ 0 }, 2,1,4,3]].to_a).to eq [2,1,4,3]
+          end
+
+        end
+
+      end
+
+    end
+
     # TODO http://reference.wolfram.com/language/guide/RearrangingAndRestructuringLists.html
     # TODO http://reference.wolfram.com/language/guide/MathematicalAndCountingOperationsOnLists.html
 

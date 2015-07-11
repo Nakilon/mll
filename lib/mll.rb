@@ -2,8 +2,25 @@ module MLL
 
   class << self
 
+    def dimensions
+      # TODO refactor into depth-first traversing
+      lambda do |list, limit = nil|
+        list = [list]
+        # String.size should not work
+        Enumerator.new do |e|
+          i = 0
+          while (!limit || limit >= i += 1) &&
+              list.map(&:class).uniq == [Array] &&
+              list.map(&:size).uniq.size == 1
+            e << list.first.size
+            list.flatten! 1
+          end
+        end
+      end
+    end
+
     def tally
-      lambda do |list, test = ->(i,j){ i == j } | # TODO implement #sameq ?
+      lambda do |list, test = ->(i,j){ i == j } | # implement #sameq ?
         h = Hash.new{ 0 }
         keys = []
         list.each do |item|
