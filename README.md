@@ -10,11 +10,13 @@ The main goal is to make Ruby more powerful by including the most used functions
 
 ## Why
 
+0. `::map` can map Arrays at specified depth!
 1. One of the most useful things is automatic zipping vectors (`Array`s) when you apply scalar functions to them. https://reference.wolfram.com/language/ref/Listable.html
 2. unlike Ruby's `Range` class, `::range` can handle negative `step` and even have `float` starting value
 3. unlike Ruby's `Array.new`, `::table` can create multidimensional arrays with a single call, not nested
 4. `::fold_list` was wanted [here](http://stackoverflow.com/q/1475808/322020) in Ruby while being already implemented as [FoldList[]](http://reference.wolfram.com/language/ref/FoldList.html) in Mathematica and [scanl](http://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#v:scanl) in Haskell
 5. `::nest` (n times) and `::nest_list` for repetitive applying the same function -- `::nest_while` and `::nest_while_list` are going to be implemented later
+6. `::tally` -- shortcut to a probably the most common usage of `#group_by` -- calculating total occurences.
 
 ## How
 
@@ -22,10 +24,19 @@ The main goal is to make Ruby more powerful by including the most used functions
     MLL::range[[2, 3]] # => [1..2, 1..3]
     MLL::range[ 1..3 ] # => [1..1, 1..2, 1..3]
 
-    MLL::table[ ->(i,j){ i+j }, [[1, 0, 1]], [[0, 2, 0]] ]
+    t = MLL::table[ ->(i,j){ i+j }, [[1, 0, 1]], [[0, 2, 0]] ]
                        # => [[1, 3, 1],
                              [0, 2, 0],
                              [1, 3, 1]]
+    t = MLL::map[ ->(i){ [i] }, t, [2] ]
+                       # => [[ [1], [3], [1] ],
+                             [ [0], [2], [0] ],
+                             [ [1], [3], [1] ]]
+    MLL::map[ ->(i){ -i }, t, [3] ]
+                       # => [[ [-1], [-3], [-1] ],
+                             [ [ 0], [-2], [ 0] ],
+                             [ [-1], [-3], [-1] ]]
+
     MLL::table[ MLL::times, 9, 9 ]
                        # => [[1,  2,  3,  4,  5,  6,  7,  8,  9],
                              [2,  4,  6,  8, 10, 12, 14, 16, 18],
@@ -36,6 +47,10 @@ The main goal is to make Ruby more powerful by including the most used functions
                              [7, 14, 21, 28, 35, 42, 49, 56, 63],
                              [8, 16, 24, 32, 40, 48, 56, 64, 72],
                              [9, 18, 27, 36, 45, 54, 63, 72, 81]]
+    # ::times     means  *
+    # ::divide    means  /
+    # ::subtract  means  -
+    # ::plus      means  +
 
     MLL::fold_list[ MLL::times, MLL::range[10] ]
                        # => [1,2,6,24,120,720,5040,40320,362880,3628800]
@@ -44,10 +59,6 @@ The main goal is to make Ruby more powerful by including the most used functions
     #   even of different dimensions with basic operations
     MLL::times[ [[1,2],[3,4]], [5,6] ]
                        # => [[5,10], [18,24]]
-    # ::times     means  *
-    # ::divide    means  /
-    # ::subtract  means  -
-    # ::plus      means  +
     
     # http://en.wikipedia.org/wiki/Collatz_conjecture
     MLL::nest_list[ ->(i){ i.even? ? i/2 : (i*3+1)/2 }, 20, 10 ]
@@ -59,6 +70,11 @@ The main goal is to make Ruby more powerful by including the most used functions
     MLL::subdivide[ 5, 10, 4 ]
                        # => [5.0, 6.25, 7.5, 8.75, 10.0]
     
+    MLL::tally[ "the quick brown fox jumps over the lazy dog".chars ]
+    # => {"t"=>2, "h"=>2, "e"=>3, " "=>8, "q"=>1, "u"=>2, "i"=>1, "c"=>1, "k"=>1,
+          "b"=>1, "r"=>2, "o"=>4, "w"=>1, "n"=>1, "f"=>1, "x"=>1, "j"=>1, "m"=>1,
+          "p"=>1, "s"=>1, "v"=>1, "l"=>1, "a"=>1, "z"=>1, "y"=>1, "d"=>1, "g"=>1}
+
 Note that to see some of above examples working in the same way you need `.to_a`, `.map(&:to_a)` or even `.to_a.map(&:to_a)` since lazyness is intensively used.
 
 ## Installation
