@@ -14,6 +14,8 @@ require_relative File.join "..", "lib", "mll"
 # TODO elegantly get rid of repetitive type checks
 # TODO ? let(:fake_lambda){ ->(*args){fail} }
 
+# TODO rewrite all Lazy#to_a into Lazy#force (it's not recursive and not documented)
+
 
 # http://reference.wolfram.com/language/guide/LanguageOverview.html
 describe MLL do

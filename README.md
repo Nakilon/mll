@@ -120,6 +120,7 @@ module MLL
 # TODO @fraggedICE wishes using Rational -- would also allow implementing more examples
 # TODO elegantly get rid of repetitive type checks
 # TODO ? let(:fake_lambda){ ->(*args){fail} }
+# TODO rewrite all Lazy#to_a into Lazy#force (it's not recursive and not documented)
 describe MLL do
   describe "List Manipulation" do
     describe "Constructing Lists" do

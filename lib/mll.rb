@@ -6,33 +6,27 @@ module MLL
       # TODO refactor into depth-first traversing
       lambda do |list, limit = nil|
         list = [list]
-        # String.size should not work
-        Enumerator.new do |e|
-          i = 0
-          while (!limit || limit >= i += 1) &&
-              list.map(&:class).uniq == [Array] &&
-              list.map(&:size).uniq.size == 1
+        enumerator = Enumerator.new do |e|
+          # String.size should not work
+          while list.map(&:class).uniq == [Array] &&
+                list.map(&:size).uniq.size == 1
             e << list.first.size
             list.flatten! 1
           end
         end
+        limit ? enumerator.lazy.take(limit) : enumerator
       end
     end
 
     def tally
       lambda do |list, test = ->(i,j){ i == j } | # implement #sameq ?
-        h = Hash.new{ 0 }
-        keys = []
-        list.each do |item|
-          h[item] += 1 if keys.each do |key|
-            if test[key, item]
-              h[key] += 1
-              break
-            end
+        Hash.new{ 0 }.tap do |result|
+          list.each do |item|
+            result[
+              list.find{ |key| test[key, item] }
+            ] += 1
           end
-          keys << item
         end
-        h
       end
     end
 
