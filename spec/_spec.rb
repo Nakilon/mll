@@ -500,7 +500,7 @@ describe MLL do
           end
           example "random walk" do
             expect(( r = Random.new(0); nest_list[->(i){ i+[-1,1][r.rand(2)] }, 0, 20] )).to be_a Enumerator
-            expect(( r = Random.new(0); nest_list[->(i){ i+[-1,1][r.rand(2)] }, 0, 20].to_a )).to eq [0,-1,0,1,0,1,2,3,4,5,6,7,6,5,6,5,4,3,2,1,2]
+            expect(( r = Random.new(0); nest_list[->(i){ i+[-1,1][r.rand(2)] }, 0, 20] ).to_a).to eq [0,-1,0,1,0,1,2,3,4,5,6,7,6,5,6,5,4,3,2,1,2]
           end
           example "successively rotate a list" do
             expect(nest_list[->(i){ i.rotate 1 }, [1,2,3,4], 4]).to be_a Enumerator
@@ -570,7 +570,7 @@ describe MLL do
           # TODO maybe move it to README.md
           example "generate a random walk" do
             expect(( r = Random.new(0); fold_list[plus, 0, Array.new(20){ [-1,1][r.rand(2)] }] )).to be_a Enumerator
-            expect(( r = Random.new(0); fold_list[plus, 0, Array.new(20){ [-1,1][r.rand(2)] }].to_a )).to eq [0,-1,0,1,0,1,2,3,4,5,6,7,6,5,6,5,4,3,2,1,2]
+            expect(( r = Random.new(0); fold_list[plus, 0, Array.new(20){ [-1,1][r.rand(2)] }] ).to_a).to eq [0,-1,0,1,0,1,2,3,4,5,6,7,6,5,6,5,4,3,2,1,2]
           end
 
           example "find successively deeper parts in an expression" do
@@ -669,7 +669,7 @@ describe MLL do
         describe "Properties & Relations:" do
 
           example "leaves are visited before roots" do
-            skip "#map need reimplementation"
+            skip "waiting for infinite map to be implemented"
             log = []
             map[log.method(:<<), [[1,2],[3,4,5]]]
             expect(log).to eq [1,2,[1,2],3,4,5,[3,4,5],[[1,2],[3,4,5]]]
@@ -745,6 +745,55 @@ describe MLL do
         end
 
         # TODO neat graphic examples
+
+      end
+
+    end
+
+  end
+
+  # http://reference.wolfram.com/language/guide/NumericalData.html
+  describe "Numerical Data" do
+
+    # http://reference.wolfram.com/language/ref/Tally.html
+    describe "#tally" do
+
+      describe "Details:" do
+        
+        example "#tally[list] is equivalent to #tally[list,#sameq]" do
+          skip "#sameq is yet to be implemented"
+        end
+
+      end
+
+      describe "Basic Examples:" do
+
+        example "obtain tallies for a list" do
+          expect(tally[[1, 1, 2, 1, 3, 2, 1]]).to be_a Hash
+          expect(tally[[1, 1, 2, 1, 3, 2, 1]]).to eq({1=>4, 2=>2, 3=>1})
+        end
+
+        example "use test argument to count elements with the same class" do
+          expect(tally[[[1,2], [1,2,3,4], 1, [1,2,3,4], 1], ->(i,j){ i.class == j.class }]).to be_a Hash
+          expect(tally[[[1,2], [1,2,3,4], 1, [1,2,3,4], 1], ->(i,j){ i.class == j.class }]).to eq({[1,2]=>3, 1=>2})
+        end
+
+        example "count the instances of randomly generated integers" do
+          expect(( r = Random.new(0); tally[Array.new(50){ r.rand 10 }] )).to be_a Hash
+          expect(( r = Random.new(0); tally[Array.new(50){ r.rand 10 }] )).to eq({5=>4, 0=>6, 3=>10, 7=>7, 9=>5, 2=>4, 4=>3, 6=>2, 8=>5, 1=>4})
+        end
+
+      end
+
+      describe "Properties & Relations:" do
+
+        example "elements with highest frequencies are given by #commonest" do
+          skip "#commonest is yet to be implemented"
+        end
+
+        example "#tally is a discrete analog of #bincounts" do
+          skip "#bincounts is yet to be implemented"
+        end
 
       end
 

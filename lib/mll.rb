@@ -1,91 +1,114 @@
 module MLL
 
-  def self.subdivide
-    lambda do |*args|
-      case args.size
-        when 1 ; subdivide[1, args[0]]
-        when 2 ; subdivide[0, args[0], args[1]]
-        when 3
-          # raise ArgumentError.new("can't divide into 0 parts") if args[2].zero?
-          range[args[0], args[1], (args[1] - args[0]) * 1.0 / args[2]]
-      else
-        raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)")
-      end
-    end
-  end
+  class << self
 
-  def self.nest_list
-    lambda do |f, expr, n|
-      Enumerator.new do |e|
-        e << expr
-        n.times do
-          e << expr = f.call(expr)
+    def tally
+      lambda do |list, test = ->(i,j){ i == j } | # TODO implement #sameq ?
+        h = Hash.new{ 0 }
+        keys = []
+        list.each do |item|
+          h[item] += 1 if keys.each do |key|
+            if test[key, item]
+              h[key] += 1
+              break
+            end
+          end
+          keys << item
         end
+        h
       end
     end
-  end
-  # def self.nest *args
-  #   nest_list(*args).last
-  # end
-  def self.nest
-    lambda do |f, expr, n|
-      n.times{ expr = f.call expr }
-      expr
-    end
-  end
 
-  def self.fold_list
-    lambda do |f, x, list = nil|
-      x, *list = x.to_a unless list
-      # TODO use Ruby#inject ?
-      Enumerator.new do |e|
-        e << x
-        list.each do |i|
-          e << x = f.call(x, i)
-        end
-      end
-    end
-  end
-
-  def self.table
-    lambda do |f, *args|
-      [].tap do |result|
-        [[result, args.map{ |r| # add lazy?
-          r.respond_to?(:map) && r.first.respond_to?(:map) ?
-            r.first : range[*r]
-        }]].tap do |stack|
-          stack.each do |ai, ri|
-            # TODO try to make #table lazy (Enumerator instead of Array)
-            # "no implicit conversion of Enumerator::Lazy into Array"
-            # "undefined method `replace' for #<Enumerator::Lazy: []>"
-            ai.replace ri.first.map{ |i|
-              if ri.size == 1
-                f.call(*ai, i)
-              else
-                [*ai.dup, i].tap{ |t| stack << [t, ri.drop(1)] }
-              end
-            }
+    def nest_list
+      lambda do |f, expr, n|
+        Enumerator.new do |e|
+          e << expr
+          n.times do
+            e << expr = f.call(expr)
           end
         end
       end
     end
-  end
+    # def self.nest *args
+    #   nest_list(*args).last
+    # end
+    def nest
+      lambda do |f, expr, n|
+        n.times{ expr = f.call expr }
+        expr
+      end
+    end
 
-  def self.define_listable_function name, &block
-    (class << self; self end).class_eval do
-      define_method name do
-        lambda do |*args|
-          case args.map{ |i| i.respond_to? :map }
-            when [true] ; args.first.lazy.map &method(name).call
-            when [true, true] ; args.first.lazy.zip(args.last).map{ |i, j| send(name)[i, j] }
-            when [true, false] ; args.first.lazy.map{ |i| send(name)[i, args.last] }
-            when [false, true] ; args.last.lazy.map{ |i| send(name)[args.first, i] }
-          else
-            block.call *args
+    def fold_list
+      lambda do |f, x, list = nil|
+        x, *list = x.to_a unless list
+        # TODO use Ruby#inject ?
+        Enumerator.new do |e|
+          e << x
+          list.each do |i|
+            e << x = f.call(x, i)
           end
         end
       end
     end
+
+    def map
+      # TODO validate depths
+      # TODO break on passing all depths
+      lambda do |f, list, depths = [1]|
+        depths = Range.new(*depths) if depths.size == 2
+        depths = Range.new(1,depths) if depths.is_a? Integer
+        g = lambda do |list, depth|
+          next list unless list.respond_to? :map
+          temp = list.lazy.map{ |i| g[i, depth + 1] }
+          temp = temp.map &f if depths.include? depth
+          temp
+        end
+        g[list, 1]
+      end
+    end
+
+    def table
+      lambda do |f, *args|
+        [].tap do |result|
+          [[result, args.map{ |r| # add lazy?
+            r.respond_to?(:map) && r.first.respond_to?(:map) ?
+              r.first : range[*r]
+          }]].tap do |stack|
+            stack.each do |ai, ri|
+              # TODO try to make #table lazy (Enumerator instead of Array)
+              # "no implicit conversion of Enumerator::Lazy into Array"
+              # "undefined method `replace' for #<Enumerator::Lazy: []>"
+              ai.replace ri.first.map{ |i|
+                if ri.size == 1
+                  f.call(*ai, i)
+                else
+                  [*ai.dup, i].tap{ |t| stack << [t, ri.drop(1)] }
+                end
+              }
+            end
+          end
+        end
+      end
+    end
+
+    def define_listable_function name, &block
+      (class << self; self end).class_eval do
+        define_method name do
+          lambda do |*args|
+            case args.map{ |i| i.respond_to? :map }
+              when [true] ; args.first.lazy.map &method(name).call
+              when [true, true] ; args.first.lazy.zip(args.last).map{ |i, j| send(name)[i, j] }
+              when [true, false] ; args.first.lazy.map{ |i| send(name)[i, args.last] }
+              when [false, true] ; args.last.lazy.map{ |i| send(name)[args.first, i] }
+            else
+              block.call *args
+            end
+          end
+        end
+      end
+    end
+
   end
 
   # TODO not sure if we need any other kind of Listability except of #range[[Array]]
@@ -112,19 +135,17 @@ module MLL
     end
   end
 
-  def self.map
-    # TODO validate depths
-    # TODO break on passing all depths
-    lambda do |f, list, depths = [1]|
-      depths = range[*depths] if depths.size == 2
-      depths = range[depths] if depths.is_a? Integer
-      g = lambda do |list, depth|
-        next list unless list.respond_to? :map
-        temp = list.lazy.map{ |i| g[i, depth + 1] }
-        temp = temp.map &f if depths.include? depth
-        temp
+  def self.subdivide
+    lambda do |*args|
+      case args.size
+        when 1 ; subdivide[1, args[0]]
+        when 2 ; subdivide[0, args[0], args[1]]
+        when 3
+          # raise ArgumentError.new("can't divide into 0 parts") if args[2].zero?
+          range[args[0], args[1], (args[1] - args[0]) * 1.0 / args[2]]
+      else
+        raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)")
       end
-      g[list, 1]
     end
   end
 

@@ -79,19 +79,20 @@ or
 
 ```
 module MLL
-  def self.fold_list
-    lambda do |f, x, list = nil|
-      # TODO use Ruby#inject ?
-  def self.table
-    lambda do |f, *args|
-      [].tap do |result|
-        }]].tap do |stack|
-          stack.each do |ai, ri|
-            # TODO try to make #table lazy (Enumerator instead of Array)
+  class << self
+    def fold_list
+      lambda do |f, x, list = nil|
+        # TODO use Ruby#inject ?
+    def map
+      # TODO validate depths
+      # TODO break on passing all depths
+    def table
+      lambda do |f, *args|
+        [].tap do |result|
+          }]].tap do |stack|
+            stack.each do |ai, ri|
+              # TODO try to make #table lazy (Enumerator instead of Array)
   # TODO not sure if we need any other kind of Listability except of #range[[Array]]
-  def self.map
-    # TODO validate depths
-    # TODO break on passing all depths
 ```
 
 #### spec/_spec.rb
