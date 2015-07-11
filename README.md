@@ -1,5 +1,7 @@
 # MLL (Mathematica Language Library)
 
+[![Gem Version](https://badge.fury.io/rb/mll.svg)](http://badge.fury.io/rb/mll)
+
 ## What
 
 This gem isn't supposed to mimic all data types, exact syntax of Wolfram Mathematica or make Ruby able to make the same visualisations.
@@ -11,8 +13,8 @@ The main goal is to make Ruby more powerful by including the most used functions
 1. One of the most useful things is automatic zipping vectors (`Array`s) when you apply scalar functions to them. https://reference.wolfram.com/language/ref/Listable.html
 2. unlike Ruby's `Range` class, `::range` can handle negative `step` and even have `float` starting value
 3. unlike Ruby's `Array.new`, `::table` can create multidimensional arrays with a single call, not nested
-4. `#fold_list` was wanted [here](http://stackoverflow.com/q/1475808/322020) in Ruby while being already implemented as [FoldList[]](http://reference.wolfram.com/language/ref/FoldList.html) in Mathematica and [scanl](http://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#v:scanl) in Haskell
-5. `#nest` (n times) and `#nest_list` for repetitive applying the same function -- `#nest_while` and `#nest_while_list` are going to be implemented later
+4. `::fold_list` was wanted [here](http://stackoverflow.com/q/1475808/322020) in Ruby while being already implemented as [FoldList[]](http://reference.wolfram.com/language/ref/FoldList.html) in Mathematica and [scanl](http://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#v:scanl) in Haskell
+5. `::nest` (n times) and `::nest_list` for repetitive applying the same function -- `::nest_while` and `::nest_while_list` are going to be implemented later
 
 ## How
 
