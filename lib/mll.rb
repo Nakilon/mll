@@ -1,5 +1,19 @@
 module MLL
 
+  def self.subdivide
+    lambda do |*args|
+      case args.size
+        when 1 ; subdivide[1, args[0]]
+        when 2 ; subdivide[0, args[0], args[1]]
+        when 3
+          # raise ArgumentError.new("can't divide into 0 parts") if args[2].zero?
+          range[args[0], args[1], (args[1] - args[0]) * 1.0 / args[2]]
+      else
+        raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)")
+      end
+    end
+  end
+
   def self.nest_list
     lambda do |f, expr, n|
       Enumerator.new do |e|
@@ -98,6 +112,22 @@ module MLL
     end
   end
 
+  def self.map
+    # TODO validate depths
+    # TODO break on passing all depths
+    lambda do |f, list, depths = [1]|
+      depths = range[*depths] if depths.size == 2
+      depths = range[depths] if depths.is_a? Integer
+      g = lambda do |list, depth|
+        next list unless list.respond_to? :map
+        temp = list.lazy.map{ |i| g[i, depth + 1] }
+        temp = temp.map &f if depths.include? depth
+        temp
+      end
+      g[list, 1]
+    end
+  end
+
   define_listable_function(:subtract) { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] - args[1] }
   define_listable_function(:divide)   { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] / args[1] }
   define_listable_function(:_plus)    { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] + args[1] }
@@ -119,19 +149,5 @@ module MLL
 
   define_orderless_function(:plus,  0) { |a, b| _plus.call  a, b }
   define_orderless_function(:times, 1) { |a, b| _times.call a, b }
-
-  def self.subdivide
-    lambda do |*args|
-      case args.size
-        when 1 ; subdivide[1, args[0]]
-        when 2 ; subdivide[0, args[0], args[1]]
-        when 3
-          # raise ArgumentError.new("can't divide into 0 parts") if args[2].zero?
-          range[args[0], args[1], (args[1] - args[0]) * 1.0 / args[2]]
-      else
-        raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)")
-      end
-    end
-  end
 
 end

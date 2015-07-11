@@ -89,6 +89,9 @@ module MLL
           stack.each do |ai, ri|
             # TODO try to make #table lazy (Enumerator instead of Array)
   # TODO not sure if we need any other kind of Listability except of #range[[Array]]
+  def self.map
+    # TODO validate depths
+    # TODO break on passing all depths
 ```
 
 #### spec/_spec.rb
@@ -102,14 +105,29 @@ describe MLL do
   describe "List Manipulation" do
     describe "Constructing Lists" do
       describe "#table" do
-        describe "Scope" do
+        describe "Scope:" do
           # TODO: "Make a triangular array:"
       describe "#range" do
         # TODO take from docs more examples that involve other functions
     describe "Applying Functions to Lists" do
       describe "#fold_list" do
-        describe "Applications" do
+        describe "Applications:" do
           # TODO maybe move it to README.md
+      describe "#map" do
+        # TODO we'll need less nested mappings when we implement stop on depths depletion
+        describe "Details and Options:" do
+          example "levels n1 though n2" do
+            expect(map[->(i){ [i] }, [1,[2,[3,[4,[5,6]]]]], [2,4]].
+              # TODO smth _<>
+          # TODO "Level corresponds to the whole expression"
+          # TODO currying "Map[f][expr] is equivalent to Map[f,expr]"
+        describe "Scope:" do
+          # TODO "Map on all levels, starting at level" ant other about Infinity
+        describe "Properties & Relations:" do
+          # TODO #mapall
+          # TODO #mapthread ?
+          # TODO #mapindexed ?
+          # TODO "negative levels"
     # TODO http://reference.wolfram.com/language/guide/ElementsOfLists.html
     # TODO http://reference.wolfram.com/language/guide/RearrangingAndRestructuringLists.html
     # TODO http://reference.wolfram.com/language/guide/MathematicalAndCountingOperationsOnLists.html

@@ -38,7 +38,7 @@ describe MLL do
           expect{ subtract[0,0,0] }.to raise_error ArgumentError
         end
 
-        describe "Basic Examples" do
+        describe "Basic Examples:" do
 
           example "subtract numbers" do
             expect(subtract[10,3]).to eq 7
@@ -46,7 +46,7 @@ describe MLL do
 
         end
 
-        describe "Scope" do
+        describe "Scope:" do
 
           example "threads element‐wise over lists" do
             expect(subtract[[1,2,3,4],0.5]).to be_a Enumerator
@@ -79,7 +79,7 @@ describe MLL do
           expect{ divide[0,0,0] }.to raise_error ArgumentError
         end
 
-        describe "Basic Examples" do
+        describe "Basic Examples:" do
 
           example "divide numbers" do
             expect(divide[77,11]).to eq 7
@@ -87,7 +87,7 @@ describe MLL do
 
         end
 
-        describe "Scope" do
+        describe "Scope:" do
 
           example "threads element‐wise over lists" do
             expect(divide[[2,3,4,5],2.0]).to be_a Enumerator
@@ -108,7 +108,7 @@ describe MLL do
 
         end
 
-        describe "Applications" do
+        describe "Applications:" do
 
           example "successive ratios in a list" do
             skip "waiting for Rationals to be used"
@@ -121,7 +121,7 @@ describe MLL do
       # http://reference.wolfram.com/language/ref/Plus.html
       describe "#plus" do
 
-        describe "Details" do
+        describe "Details:" do
 
           example "#plus[] is taken to be 0" do
             expect(plus[]).to eq 0
@@ -132,7 +132,7 @@ describe MLL do
 
         end
 
-        describe "Basic Examples" do
+        describe "Basic Examples:" do
 
           example "sums numbers" do
             expect(plus[2,3,4]).to eq 9
@@ -149,7 +149,7 @@ describe MLL do
 
         end
 
-        describe "Scope" do
+        describe "Scope:" do
 
           example "threads element‐wise over lists" do
             expect(plus[[10,20,30],[1,2,3]]).to be_a Enumerator
@@ -164,7 +164,7 @@ describe MLL do
 
         end
 
-        describe "Possible Issues" do
+        describe "Possible Issues:" do
 
           # idk why not in 'Properties & Relations'
           example "accumulate makes a cumulative sum" do
@@ -179,7 +179,7 @@ describe MLL do
       # http://reference.wolfram.com/language/ref/Times.html
       describe "#times" do
 
-        describe "Details" do
+        describe "Details:" do
 
           example "#times[] is taken to be 1" do
             expect(times[]).to eq 1
@@ -190,7 +190,7 @@ describe MLL do
 
         end
 
-        describe "Basic Examples" do
+        describe "Basic Examples:" do
 
           example "multiplies numbers" do
             expect(times[2,3,4]).to eq 24
@@ -206,7 +206,7 @@ describe MLL do
 
         end
 
-        describe "Scope" do
+        describe "Scope:" do
 
           example "threads element‐wise over lists" do
             expect(times[[2,3],[4,5]]).to be_a Enumerator
@@ -236,7 +236,7 @@ describe MLL do
       # http://reference.wolfram.com/language/ref/Table.html
       describe "#table" do
 
-        describe "Details" do
+        describe "Details:" do
 
           example "#table[expr,spec1,spec2] is effectively equivalent to #table[#table[expr,spec2],spec1]" do
             expect(table[->(i,j){ [i,j] }, 2, 3]).to eq table[->(i){ table[->(j){ [i,j] }, 3] }, 2]
@@ -244,7 +244,7 @@ describe MLL do
 
         end
 
-        describe "Basic Examples" do
+        describe "Basic Examples:" do
 
           example "a table of the first 10 squares" do
             expect(table[->(i){ i**2 }, 10]).to be_a Array
@@ -271,7 +271,7 @@ describe MLL do
           ]
         end
 
-        describe "Scope" do
+        describe "Scope:" do
 
           # TODO: "Make a triangular array:"
 
@@ -284,7 +284,7 @@ describe MLL do
 
         end
 
-        describe "Applications" do
+        describe "Applications:" do
 
           example "column table(binomial, )" do
             skip "#binomial and #column are yet to be implemented"
@@ -309,7 +309,7 @@ describe MLL do
           expect{ range[1,2,0] }.to raise_error ArgumentError
         end
 
-        describe "Details" do
+        describe "Details:" do
 
           example "the arguments need not be integers" do
             expect(range[0.25,2.9,1.25]).to be_a Enumerator
@@ -318,7 +318,7 @@ describe MLL do
 
         end
 
-        describe "Basic Examples" do
+        describe "Basic Examples:" do
 
           example "range(n)" do
             expect(range[4]).to be_a Enumerator
@@ -344,7 +344,7 @@ describe MLL do
           expect(range[3,1,-1].to_a).to eq [3,2,1]
         end
 
-        describe "Generalizations & Extensions" do
+        describe "Generalizations & Extensions:" do
 
           example "use a list of range specifications" do
             expect(range[[5,2,6,3]]).to be_a Enumerator
@@ -356,7 +356,7 @@ describe MLL do
 
         end
 
-        describe "Applications" do
+        describe "Applications:" do
 
           example "produce a geometric sequence" do
             skip "#power is yet to be implemented"
@@ -366,7 +366,7 @@ describe MLL do
 
         end
 
-        describe "Properties & Relations" do
+        describe "Properties & Relations:" do
 
           example "#range[imin,imax,di] is equivalent to #table[i,[imin,imax,di]]" do
             expect(range[2,8,3].to_a).to eq table[->(i){ i }, [2,8,3]]
@@ -386,7 +386,7 @@ describe MLL do
           expect(range[1..3].to_a.map(&:to_a)).to eq [[1],[1,2],[1,2,3]]
         end
 
-        describe "Neat Examples" do
+        describe "Neat Examples:" do
 
           example "make nested ranges" do
             range[range[range[3]]].tap do |o|
@@ -418,7 +418,7 @@ describe MLL do
         #   expect{ subdivide[0] }.to raise_error ArgumentError
         # end
 
-        describe "Details" do
+        describe "Details:" do
 
           example "generates a list of length n+1" do
             expect(subdivide[5]).to be_a Enumerator
@@ -427,7 +427,7 @@ describe MLL do
 
         end
 
-        describe "Basic Examples" do
+        describe "Basic Examples:" do
 
           example "subdivide the unit interval into 4 equal parts" do
             expect(subdivide[4]).to be_a Enumerator
@@ -450,7 +450,7 @@ describe MLL do
 
         end
 
-        describe "Properties & Relations" do
+        describe "Properties & Relations:" do
 
           example "subdivide[xmin,xmax,n] is equivalent to xmin+(xmax-xmin)Range[0,n]/n" do
             expect(subdivide[2,10,4].to_a).to eq plus[2,divide[times[10-2,range[0,4]],4]].to_a
@@ -468,7 +468,7 @@ describe MLL do
           expect(nest_list[->(*args){}, 0, 5].to_a.size).to eq 6
         end
 
-        describe "Basic Examples" do
+        describe "Basic Examples:" do
 
           example "???" do
             skip "#cos (or #sqrt or anything unar is yet to be implemented"
@@ -476,7 +476,7 @@ describe MLL do
 
         end
 
-        describe "Scope" do
+        describe "Scope:" do
 
           example "nesting can return a single number" do
             skip "#sqrt is yet to be implemented"
@@ -484,7 +484,7 @@ describe MLL do
 
         end
 
-        describe "Applications" do
+        describe "Applications:" do
 
           example "powers of 2" do
             expect(nest_list[->(i){ 2*i }, 1, 10]).to be_a Enumerator
@@ -509,7 +509,7 @@ describe MLL do
 
         end
 
-        describe "Properties & Relations" do
+        describe "Properties & Relations:" do
 
           example "#nest gives the last element of #nest_list" do
             expect(nest_list[->(i){ i*2 }, 3, 4].to_a.last).to eq nest[->(i){ i*2 }, 3, 4]
@@ -536,7 +536,7 @@ describe MLL do
       # http://reference.wolfram.com/language/ref/FoldList.html
       describe "#fold_list" do
 
-        describe "Details" do
+        describe "Details:" do
 
           example "with a length n list, #fold_list generates a list of length n+1" do
             skip "waiting got Wolfram team to fix the reported bug"
@@ -548,7 +548,7 @@ describe MLL do
 
         end
 
-        describe "Basic Examples" do
+        describe "Basic Examples:" do
 
           example "cumulative sums of the elements of the list" do
             expect(fold_list[plus,5,[1,2,3,4]]).to be_a Enumerator
@@ -565,7 +565,7 @@ describe MLL do
 
         end
 
-        describe "Applications" do
+        describe "Applications:" do
 
           # TODO maybe move it to README.md
           example "generate a random walk" do
@@ -580,7 +580,7 @@ describe MLL do
 
         end
 
-        describe "Properties & Relations" do
+        describe "Properties & Relations:" do
 
           example "makes a list of length n+1" do
             expect(fold_list[->{}, 0, [*1..10]]).to be_a Enumerator
@@ -601,10 +601,89 @@ describe MLL do
 
         end
 
-        describe "Neat Examples" do
+        describe "Neat Examples:" do
 
           example "compute the minimum number of coins of different value needed to make up an amount" do
             skip "at least #mod is yet to be implemented"
+          end
+
+        end
+
+      end
+
+      # http://reference.wolfram.com/language/ref/Map.html
+      describe "#map" do
+
+        # TODO we'll need less nested mappings when we implement stop on depths depletion
+
+        describe "Details and Options:" do
+
+          example "levels n1 though n2" do
+            expect(map[->(i){ [i] }, [1,[2,[3,[4,[5,6]]]]], [2,4]]).to be_a Enumerator
+            expect(map[->(i){ [i] }, [1,[2,[3,[4,[5,6]]]]], [2,4]].
+              to_a.map{ |i| i.respond_to?(:to_a) ? i.
+              to_a.map{ |i| i.respond_to?(:to_a) ? i.
+              to_a.map{ |i| i.respond_to?(:to_a) ? i.
+              to_a.map{ |i| i.respond_to?(:to_a) ? i.
+              to_a.map{ |i| i.respond_to?(:to_a) ? i.
+              to_a.map{ |i| i.respond_to?(:to_a) ? i.
+              to_a.map{ |i| i.respond_to?(:to_a) ? i.to_a : i } : i } : i } : i } : i } : i } : i }
+              # TODO smth _<>
+            ).to eq [1,[[2],[[[3],[[[4],[[5,6]]]]]]]]
+          end
+
+          # TODO "Level corresponds to the whole expression"
+          # TODO currying "Map[f][expr] is equivalent to Map[f,expr]"
+
+        end
+
+        describe "Basic Examples:" do
+
+          example "???" do
+            expect(map[range, [1,2,3]]).to be_a Enumerator
+            expect(map[range, [1,2,3]].to_a.map(&:to_a)).to eq [[1],[1,2],[1,2,3]]
+          end
+          example "use explicit pure functions" do
+            expect(map[->(i){ i**2 }, [1,2,3,4]]).to be_a Enumerator
+            expect(map[->(i){ i**2 }, [1,2,3,4]].to_a).to eq [1,4,9,16]
+          end
+          example "map at top level" do
+            expect(map[->(i){ [i] }, [[1,2],[3,4,5]]]).to be_a Enumerator
+            expect(map[->(i){ [i] }, [[1,2],[3,4,5]]].to_a.map{ |i| i.to_a.map &:to_a }).to eq [[[1,2]],[[3,4,5]]]
+          end
+          example "map at level 2" do
+            expect(map[->(i){ [i] }, [[1,2],[3,4,5]], [2]]).to be_a Enumerator
+            expect(map[->(i){ [i] }, [[1,2],[3,4,5]], [2]].to_a.map(&:to_a)).to eq [[[1],[2]],[[3],[4],[5]]]
+          end
+          example "map at levels 1 and 2" do
+            expect(map[->(i){ [i] }, [[1,2],[3,4,5]], 2]).to be_a Enumerator
+            expect(map[->(i){ [i] }, [[1,2],[3,4,5]], 2].to_a.map{ |i| i.to_a.map(&:to_a) }).to eq [[[[1],[2]]],[[[3],[4],[5]]]]
+          end
+
+        end
+
+        describe "Scope:" do
+          # TODO "Map on all levels, starting at level" ant other about Infinity
+        end
+
+        describe "Properties & Relations:" do
+
+          example "leaves are visited before roots" do
+            skip "#map need reimplementation"
+            log = []
+            map[log.method(:<<), [[1,2],[3,4,5]]]
+            expect(log).to eq [1,2,[1,2],3,4,5,[3,4,5],[[1,2],[3,4,5]]]
+          end
+
+          # TODO #mapall
+
+          # TODO #mapthread ?
+          # TODO #mapindexed ?
+
+          # TODO "negative levels"
+
+          example "#scan does the same as #map, but without returning a result" do
+            skip "#scan is yet to be implemented"
           end
 
         end
@@ -630,7 +709,7 @@ describe MLL do
       # http://reference.wolfram.com/language/ref/Nest.html
       describe "#nest" do
 
-        describe "Basic Examples" do
+        describe "Basic Examples:" do
 
           example "the function to nest can be a pure function" do
             expect(nest[->(i){ (1+i)**2 }, 1, 3]).to eq 676
@@ -638,7 +717,7 @@ describe MLL do
 
         end
 
-        describe "Scope" do
+        describe "Scope:" do
 
           example "nesting can return a single number" do
             skip "#sqrt is yet to be implemented"
@@ -646,7 +725,7 @@ describe MLL do
 
         end
 
-        describe "Applications" do
+        describe "Applications:" do
 
           example "newton iterations for" do
             skip "waiting for Rationals to be used"
@@ -657,7 +736,7 @@ describe MLL do
 
         end
 
-        describe "Properties & Relations" do
+        describe "Properties & Relations:" do
 
           example "Ruby#inject automatically inserts second arguments from a list" do
             expect(nest[->(i){ i*2 }, 3, 4]).to eq ([2]*4).inject(3){ |i,j| i*j }
