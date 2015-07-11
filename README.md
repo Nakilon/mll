@@ -99,7 +99,7 @@ module MLL
     def dimensions
       # TODO refactor into depth-first traversing
     def fold_list
-      lambda do |f, x, list = nil|
+      lambda do |x, list, f = nil|
         # TODO use Ruby#inject ?
     def map
       # TODO validate depths
@@ -137,7 +137,7 @@ describe MLL do
         # TODO we'll need less nested mappings when we implement stop on depths depletion
         describe "Details and Options:" do
           example "levels n1 though n2" do
-            expect(map[->(i){ [i] }, [1,[2,[3,[4,[5,6]]]]], [2,4]].
+            expect(map[[1,[2,[3,[4,[5,6]]]]], [2,4], ->(i){ [i] }].
               # TODO smth _<>
           # TODO "Level corresponds to the whole expression"
           # TODO currying "Map[f][expr] is equivalent to Map[f,expr]"
@@ -153,8 +153,6 @@ describe MLL do
   describe "Functional Programming" do
     describe "Iteratively Applying Functions" do
       # TODO move #nest_list and #fold_list and others here?
-      describe "#nest" do
-        # TODO neat graphic examples
 # TODO http://reference.wolfram.com/language/guide/HandlingArraysOfData.html
 # TODO http://reference.wolfram.com/language/guide/ComputationWithStructuredDatasets.html
 ```

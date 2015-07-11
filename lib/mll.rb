@@ -19,7 +19,7 @@ module MLL
     end
 
     def tally
-      lambda do |list, test = nil | # implement #sameq ?
+      lambda do |list, test = nil| # implement #sameq ?
         return Hash[ list.group_by{ |i| i }.map{ |k, v| [k, v.size] } ] unless test
         Hash.new{ 0 }.tap do |result|
           list.each do |item|
@@ -31,8 +31,15 @@ module MLL
       end
     end
 
+    def nest
+      lambda do |expr, n, f|
+        n.times{ expr = f.call expr }
+        expr
+      end
+    end
+
     def nest_list
-      lambda do |f, expr, n|
+      lambda do |expr, n, f|
         Enumerator.new do |e|
           e << expr
           n.times do
@@ -41,19 +48,13 @@ module MLL
         end
       end
     end
-    # def self.nest *args
-    #   nest_list(*args).last
-    # end
-    def nest
-      lambda do |f, expr, n|
-        n.times{ expr = f.call expr }
-        expr
-      end
-    end
 
     def fold_list
-      lambda do |f, x, list = nil|
-        x, *list = x.to_a unless list
+      lambda do |x, list, f = nil|
+        unless f
+          f = list
+          x, *list = x.to_a
+        end
         # TODO use Ruby#inject ?
         Enumerator.new do |e|
           e << x
@@ -67,7 +68,8 @@ module MLL
     def map
       # TODO validate depths
       # TODO break on passing all depths
-      lambda do |f, list, depths = [1]|
+      lambda do |list, depths, f = nil|
+        depths, f = [1], depths unless f
         depths = Range.new(*depths) if depths.size == 2
         depths = Range.new(1,depths) if depths.is_a? Integer
         g = lambda do |list, depth|

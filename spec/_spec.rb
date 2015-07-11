@@ -170,8 +170,8 @@ describe MLL do
 
           # idk why not in 'Properties & Relations'
           example "accumulate makes a cumulative sum" do
-            expect(fold_list[plus, 0, [1,2,3]]).to be_a Enumerator
-            expect(fold_list[plus, 0, [1,2,3]].to_a).to eq [0,1,3,6]
+            expect(fold_list[0, [1,2,3], plus]).to be_a Enumerator
+            expect(fold_list[0, [1,2,3], plus].to_a).to eq [0,1,3,6]
           end
           
         end
@@ -466,8 +466,8 @@ describe MLL do
       describe "#nest_list" do
 
         example "gives a list of length n+1" do
-          expect(nest_list[->{}, 0, 5]).to be_a Enumerator
-          expect(nest_list[->(*args){}, 0, 5].to_a.size).to eq 6
+          expect(nest_list[0, 5, ->(*){}]).to be_a Enumerator
+          expect(nest_list[0, 5, ->(*){}].to_a.size).to eq 6
         end
 
         describe "Basic Examples:" do
@@ -489,24 +489,24 @@ describe MLL do
         describe "Applications:" do
 
           example "powers of 2" do
-            expect(nest_list[->(i){ 2*i }, 1, 10]).to be_a Enumerator
-            expect(nest_list[->(i){ 2*i }, 1, 10].to_a).to eq [1,2,4,8,16,32,64,128,256,512,1024]
+            expect(nest_list[1, 10, ->(i){ 2*i }]).to be_a Enumerator
+            expect(nest_list[1, 10, ->(i){ 2*i }].to_a).to eq [1,2,4,8,16,32,64,128,256,512,1024]
           end
           example "iterates in the  problem" do
-            expect(nest_list[->(i){ i.even? ? i/2 : (i*3+1)/2 }, 100, 20]).to be_a Enumerator
-            expect(nest_list[->(i){ i.even? ? i/2 : (i*3+1)/2 }, 100, 20].to_a).to eq [100,50,25,38,19,29,44,22,11,17,26,13,20,10,5,8,4,2,1,2,1]
+            expect(nest_list[100, 20, ->(i){ i.even? ? i/2 : (i*3+1)/2 }]).to be_a Enumerator
+            expect(nest_list[100, 20, ->(i){ i.even? ? i/2 : (i*3+1)/2 }].to_a).to eq [100,50,25,38,19,29,44,22,11,17,26,13,20,10,5,8,4,2,1,2,1]
           end
           example "linear congruential pseudorandom generator" do
-            expect(nest_list[->(i){ (i*59)%101 }, 1, 15]).to be_a Enumerator
-            expect(nest_list[->(i){ (i*59)%101 }, 1, 15].to_a).to eq [1,59,47,46,88,41,96,8,68,73,65,98,25,61,64,39]
+            expect(nest_list[1, 15, ->(i){ (i*59)%101 }]).to be_a Enumerator
+            expect(nest_list[1, 15, ->(i){ (i*59)%101 }].to_a).to eq [1,59,47,46,88,41,96,8,68,73,65,98,25,61,64,39]
           end
           example "random walk" do
-            expect(( r = Random.new(0); nest_list[->(i){ i+[-1,1][r.rand(2)] }, 0, 20] )).to be_a Enumerator
-            expect(( r = Random.new(0); nest_list[->(i){ i+[-1,1][r.rand(2)] }, 0, 20] ).to_a).to eq [0,-1,0,1,0,1,2,3,4,5,6,7,6,5,6,5,4,3,2,1,2]
+            expect(( r = Random.new(0); nest_list[0, 20, ->(i){ i+[-1,1][r.rand(2)] }] )).to be_a Enumerator
+            expect(( r = Random.new(0); nest_list[0, 20, ->(i){ i+[-1,1][r.rand(2)] }] ).to_a).to eq [0,-1,0,1,0,1,2,3,4,5,6,7,6,5,6,5,4,3,2,1,2]
           end
           example "successively rotate a list" do
-            expect(nest_list[->(i){ i.rotate 1 }, [1,2,3,4], 4]).to be_a Enumerator
-            expect(nest_list[->(i){ i.rotate 1 }, [1,2,3,4], 4].to_a).to eq [[1,2,3,4],[2,3,4,1],[3,4,1,2],[4,1,2,3],[1,2,3,4]]
+            expect(nest_list[[1,2,3,4], 4, ->(i){ i.rotate 1 }]).to be_a Enumerator
+            expect(nest_list[[1,2,3,4], 4, ->(i){ i.rotate 1 }].to_a).to eq [[1,2,3,4],[2,3,4,1],[3,4,1,2],[4,1,2,3],[1,2,3,4]]
           end
 
         end
@@ -514,15 +514,15 @@ describe MLL do
         describe "Properties & Relations:" do
 
           example "#nest gives the last element of #nest_list" do
-            expect(nest_list[->(i){ i*2 }, 3, 4].to_a.last).to eq nest[->(i){ i*2 }, 3, 4]
+            expect(nest_list[3, 4, ->(i){ i*2 }].to_a.last).to eq nest[3, 4, ->(i){ i*2 }]
           end
           example "nesting zero times simply returns to the original argument" do
-            expect(nest_list[->{fail}, 5, 0]).to be_a Enumerator
-            expect(nest_list[->(*args){fail}, 5, 0].to_a).to eq [5]
+            expect(nest_list[5, 0, ->(*){fail}]).to be_a Enumerator
+            expect(nest_list[5, 0, ->(*){fail}].to_a).to eq [5]
           end
           example "#fold_list automatically inserts second arguments from a list" do
-            expect(nest_list[->(i  ){ i*2 }, 3,     4].to_a).to eq \
-                   fold_list[->(i,j){ i*j }, 3, [2]*4].to_a
+            expect(nest_list[3,     4, ->(i  ){ i*2 }].to_a).to eq \
+                   fold_list[3, [2]*4, ->(i,j){ i*j }].to_a
           end
 
         end
@@ -543,8 +543,8 @@ describe MLL do
             skip "waiting got Wolfram team to fix the reported bug"
           end
           example "#fold_list[f,list] is equivalent to #fold_list[f,[list][0],list[1..-1]]" do
-            expect(fold_list[plus,[1,2,3]]).to be_a Enumerator
-            expect(fold_list[plus,[1,2,3]].to_a).to eq fold_list[plus,1,[2,3]].to_a
+            expect(fold_list[[1,2,3], plus]).to be_a Enumerator
+            expect(fold_list[[1,2,3], plus].to_a).to eq fold_list[1, [2,3], plus].to_a
           end
 
         end
@@ -552,16 +552,16 @@ describe MLL do
         describe "Basic Examples:" do
 
           example "cumulative sums of the elements of the list" do
-            expect(fold_list[plus,5,[1,2,3,4]]).to be_a Enumerator
-            expect(fold_list[plus,5,[1,2,3,4]].to_a).to eq [5,6,8,11,15]
+            expect(fold_list[5, [1,2,3,4], plus]).to be_a Enumerator
+            expect(fold_list[5, [1,2,3,4], plus].to_a).to eq [5,6,8,11,15]
           end
           example "cumulative powers" do
-            expect(fold_list[->(base, power){ base ** power },2,[3,2,1]]).to be_a Enumerator
-            expect(fold_list[->(base, power){ base ** power },2,[3,2,1]].to_a).to eq [2,8,64,64]
+            expect(fold_list[2, [3,2,1], ->(base, power){ base ** power }]).to be_a Enumerator
+            expect(fold_list[2, [3,2,1], ->(base, power){ base ** power }].to_a).to eq [2,8,64,64]
           end
           example "start from the first element of the list" do
-            expect(fold_list[plus,[1,2,3,4]]).to be_a Enumerator
-            expect(fold_list[plus,[1,2,3,4]].to_a).to eq [1,3,6,10]
+            expect(fold_list[[1,2,3,4], plus]).to be_a Enumerator
+            expect(fold_list[[1,2,3,4], plus].to_a).to eq [1,3,6,10]
           end
 
         end
@@ -570,13 +570,13 @@ describe MLL do
 
           # TODO maybe move it to README.md
           example "generate a random walk" do
-            expect(( r = Random.new(0); fold_list[plus, 0, Array.new(20){ [-1,1][r.rand(2)] }] )).to be_a Enumerator
-            expect(( r = Random.new(0); fold_list[plus, 0, Array.new(20){ [-1,1][r.rand(2)] }] ).to_a).to eq [0,-1,0,1,0,1,2,3,4,5,6,7,6,5,6,5,4,3,2,1,2]
+            expect(( r = Random.new(0); fold_list[0, Array.new(20){ [-1,1][r.rand(2)] }, plus] )).to be_a Enumerator
+            expect(( r = Random.new(0); fold_list[0, Array.new(20){ [-1,1][r.rand(2)] }, plus] ).to_a).to eq [0,-1,0,1,0,1,2,3,4,5,6,7,6,5,6,5,4,3,2,1,2]
           end
 
           example "find successively deeper parts in an expression" do
-            expect(fold_list[->(list,index){ list[index] }, [[1,2],[3,[4,5],6,7],8], [1,1,0]]).to be_a Enumerator
-            expect(fold_list[->(list,index){ list[index] }, [[1,2],[3,[4,5],6,7],8], [1,1,0]].to_a).to eq [[[1,2],[3,[4,5],6,7],8],[3,[4,5],6,7],[4,5],4]
+            expect(fold_list[[[1,2],[3,[4,5],6,7],8], [1,1,0], ->(list,index){ list[index] }]).to be_a Enumerator
+            expect(fold_list[[[1,2],[3,[4,5],6,7],8], [1,1,0], ->(list,index){ list[index] }].to_a).to eq [[[1,2],[3,[4,5],6,7],8],[3,[4,5],6,7],[4,5],4]
           end
 
         end
@@ -584,20 +584,20 @@ describe MLL do
         describe "Properties & Relations:" do
 
           example "makes a list of length n+1" do
-            expect(fold_list[->{}, 0, [*1..10]]).to be_a Enumerator
-            expect(fold_list[->(*args){}, 0, [*1..10]].to_a.size).to eq 11
+            expect(fold_list[0, [*1..10], ->(*){}]).to be_a Enumerator
+            expect(fold_list[0, [*1..10], ->(*){}].to_a.size).to eq 11
           end
           example "folding with an empty list does not apply the function at all" do
-            expect(fold_list[->{}, 0, []]).to be_a Enumerator
-            expect(fold_list[->(*args){}, 0, []].to_a).to eq [0]
+            expect(fold_list[0, [], ->(*){}]).to be_a Enumerator
+            expect(fold_list[0, [], ->(*){}].to_a).to eq [0]
           end
           example "Ruby#inject gives the last element of #fold_list" do
             f = ->(i,j){ i+j }
-            expect(fold_list[f, [1,2,3]]).to be_a Enumerator
-            expect(fold_list[f, [1,2,3]].to_a.last).to eq [1,2,3].inject(&f)
+            expect(fold_list[[1,2,3], f]).to be_a Enumerator
+            expect(fold_list[[1,2,3], f].to_a.last).to eq [1,2,3].inject(&f)
           end
           example "functions that ignore their second argument give the same result as in #nest_list" do
-            expect(fold_list[->(i,_){ [i] }, 0, range[5]].to_a).to eq nest_list[->(i){ [i] }, 0, 5].to_a
+            expect(fold_list[0, range[5], ->(i,_){ [i] }].to_a).to eq nest_list[0, 5, ->(i){ [i] }].to_a
           end
 
         end
@@ -620,8 +620,8 @@ describe MLL do
         describe "Details and Options:" do
 
           example "levels n1 though n2" do
-            expect(map[->(i){ [i] }, [1,[2,[3,[4,[5,6]]]]], [2,4]]).to be_a Enumerator
-            expect(map[->(i){ [i] }, [1,[2,[3,[4,[5,6]]]]], [2,4]].
+            expect(map[[1,[2,[3,[4,[5,6]]]]], [2,4], ->(i){ [i] }]).to be_a Enumerator
+            expect(map[[1,[2,[3,[4,[5,6]]]]], [2,4], ->(i){ [i] }].
               to_a.map{ |i| i.respond_to?(:to_a) ? i.
               to_a.map{ |i| i.respond_to?(:to_a) ? i.
               to_a.map{ |i| i.respond_to?(:to_a) ? i.
@@ -641,24 +641,24 @@ describe MLL do
         describe "Basic Examples:" do
 
           example "???" do
-            expect(map[range, [1,2,3]]).to be_a Enumerator
-            expect(map[range, [1,2,3]].to_a.map(&:to_a)).to eq [[1],[1,2],[1,2,3]]
+            expect(map[[1,2,3], range]).to be_a Enumerator
+            expect(map[[1,2,3], range].to_a.map(&:to_a)).to eq [[1],[1,2],[1,2,3]]
           end
           example "use explicit pure functions" do
-            expect(map[->(i){ i**2 }, [1,2,3,4]]).to be_a Enumerator
-            expect(map[->(i){ i**2 }, [1,2,3,4]].to_a).to eq [1,4,9,16]
+            expect(map[[1,2,3,4], ->(i){ i**2 }]).to be_a Enumerator
+            expect(map[[1,2,3,4], ->(i){ i**2 }].to_a).to eq [1,4,9,16]
           end
           example "map at top level" do
-            expect(map[->(i){ [i] }, [[1,2],[3,4,5]]]).to be_a Enumerator
-            expect(map[->(i){ [i] }, [[1,2],[3,4,5]]].to_a.map{ |i| i.to_a.map &:to_a }).to eq [[[1,2]],[[3,4,5]]]
+            expect(map[[[1,2],[3,4,5]], ->(i){ [i] }]).to be_a Enumerator
+            expect(map[[[1,2],[3,4,5]], ->(i){ [i] }].to_a.map{ |i| i.to_a.map &:to_a }).to eq [[[1,2]],[[3,4,5]]]
           end
           example "map at level 2" do
-            expect(map[->(i){ [i] }, [[1,2],[3,4,5]], [2]]).to be_a Enumerator
-            expect(map[->(i){ [i] }, [[1,2],[3,4,5]], [2]].to_a.map(&:to_a)).to eq [[[1],[2]],[[3],[4],[5]]]
+            expect(map[[[1,2],[3,4,5]], [2], ->(i){ [i] }]).to be_a Enumerator
+            expect(map[[[1,2],[3,4,5]], [2], ->(i){ [i] }].to_a.map(&:to_a)).to eq [[[1],[2]],[[3],[4],[5]]]
           end
           example "map at levels 1 and 2" do
-            expect(map[->(i){ [i] }, [[1,2],[3,4,5]], 2]).to be_a Enumerator
-            expect(map[->(i){ [i] }, [[1,2],[3,4,5]], 2].to_a.map{ |i| i.to_a.map(&:to_a) }).to eq [[[[1],[2]]],[[[3],[4],[5]]]]
+            expect(map[[[1,2],[3,4,5]], 2, ->(i){ [i] }]).to be_a Enumerator
+            expect(map[[[1,2],[3,4,5]], 2, ->(i){ [i] }].to_a.map{ |i| i.to_a.map(&:to_a) }).to eq [[[[1],[2]]],[[[3],[4],[5]]]]
           end
 
         end
@@ -751,7 +751,7 @@ describe MLL do
         describe "Basic Examples:" do
 
           example "the function to nest can be a pure function" do
-            expect(nest[->(i){ (1+i)**2 }, 1, 3]).to eq 676
+            expect(nest[1, 3, ->(i){ (1+i)**2 }]).to eq 676
           end
 
         end
@@ -759,7 +759,7 @@ describe MLL do
         describe "Scope:" do
 
           example "nesting can return a single number" do
-            skip "#sqrt is yet to be implemented"
+            skip "#sqrt is yet to be implemented" # maybe use Array#zip instead?
           end
 
         end
@@ -778,12 +778,10 @@ describe MLL do
         describe "Properties & Relations:" do
 
           example "Ruby#inject automatically inserts second arguments from a list" do
-            expect(nest[->(i){ i*2 }, 3, 4]).to eq ([2]*4).inject(3){ |i,j| i*j }
+            expect(nest[3, 4, ->(i){ i*2 }]).to eq ([2]*4).inject(3){ |i,j| i*j }
           end
 
         end
-
-        # TODO neat graphic examples
 
       end
 
