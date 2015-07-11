@@ -26,6 +26,7 @@ task :todo do |t|
       end
       readme_file.puts "```"
     end
+    readme_file.truncate readme_file.pos
   end
 end
 
