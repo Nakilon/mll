@@ -3,13 +3,13 @@ module MLL
   class << self
 
     def dimensions
-      # TODO refactor into depth-first traversing
       lambda do |list, limit = nil|
         list = [list]
         enumerator = Enumerator.new do |e|
-          # String.size should not work
+          # String.size shall not pass
           while list.map(&:class).uniq == [Array] &&
                 list.map(&:size).uniq.size == 1
+            # TODO refactor into depth-first yielding
             e << list.first.size
             list.flatten! 1
           end
@@ -46,6 +46,14 @@ module MLL
             e << expr = f.call(expr)
           end
         end
+      end
+    end
+
+    def nest_while
+      # TODO finish me
+      lambda do |expr, f, test|
+        expr = f[expr] while test[expr]
+        expr
       end
     end
 
@@ -184,5 +192,11 @@ module MLL
 
   define_orderless_function(:plus,  0) { |a, b| _plus.call  a, b }
   define_orderless_function(:times, 1) { |a, b| _times.call a, b }
+  
+  def self.mean
+    lambda do |list|
+      divide[times[plus[*list], 1.0], list.size]
+    end
+  end
 
 end

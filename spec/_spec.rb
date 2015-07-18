@@ -16,6 +16,7 @@ require_relative File.join "..", "lib", "mll"
 
 # TODO rewrite all Lazy#to_a into Lazy#force (it's not recursive and not documented)
 
+# TODO maybe make indexes count from 0 not 1
 
 # http://reference.wolfram.com/language/guide/LanguageOverview.html
 describe MLL do
@@ -745,6 +746,8 @@ describe MLL do
 
       # TODO move #nest_list and #fold_list and others here?
 
+      # TODO examples in README.rb
+
       # http://reference.wolfram.com/language/ref/Nest.html
       describe "#nest" do
 
@@ -780,6 +783,63 @@ describe MLL do
           example "Ruby#inject automatically inserts second arguments from a list" do
             expect(nest[3, 4, ->(i){ i*2 }]).to eq ([2]*4).inject(3){ |i,j| i*j }
           end
+
+        end
+
+      end
+
+      # http://reference.wolfram.com/language/ref/NestWhile.html
+      describe "#nest_while" do
+
+        describe "Details:" do
+          # TODO a lot
+        end
+
+        describe "Basic Examples:" do
+
+          example "keep dividing by 2 until the result is no longer an even number" do
+            expect(nest_while[123456, ->(i){ i / 2 }, ->(i){ i.even? }]).to eq 1929
+          end
+
+        end
+
+        describe "Scope:" do
+
+          # TODO "always compare all values generated" do
+          # TODO "compare the last two values generated" do
+          # TODO "start comparisons after 4 iterations, and compare using the 4 last values" do
+          # TODO "start comparisons after 4 iterations, and compare using the 6 last values" do
+          # TODO example "stop after at most 4 iterations, even if the test is still true" do
+          #   expect(nest_while[123456, 1, 4, ->(i){ i / 2 }, ->(i){ i.even? }]).to eq 7716
+          # end
+
+        end
+
+        describe "Generalizations & Extensions:" do
+
+          # TODO "return the last value for which the condition was still true" do
+
+        end
+
+        describe "Applications:" do
+
+          example "find the next prime after 888" do
+            require "prime"
+            expect(nest_while[888, ->(i){ i+1 }, ->(i){ !i.prime? }]).to eq 907
+          end
+          # TODO example "find the next twin prime after 888" do
+          #   require "prime"
+          #   expect(nest_while[888, 3, ->(i){ i+1 }, ->(i,_,k){ !i.prime? || !k.prime? }]).to eq 1021
+          # end
+
+        end
+
+        describe "Properties & Relations:" do
+
+          example "#fixed_point always compares the last two values" do
+            skip "#fixed_point is yet to be implemented"
+          end
+          # TODO "#nest_while can be expressed in terms of a while loop" do
 
         end
 
@@ -830,6 +890,39 @@ describe MLL do
 
         example "#tally is a discrete analog of #bincounts" do
           skip "#bincounts is yet to be implemented"
+        end
+
+      end
+
+    end
+
+    # http://reference.wolfram.com/language/ref/Mean.html
+    describe "#mean" do
+
+      describe "Basic Examples" do
+
+        example "mean of numeric values" do
+          expect(mean[[1.21, 3.4, 2.15, 4, 1.55]]).to eq 2.462
+        end
+        example "means of elements in each column" do
+          expect(mean[[[1, 2], [3, 4], [5, 6]]]).to be_a Enumerator
+          expect(mean[[[1, 2], [3, 4], [8, 9]]].to_a).to eq [4, 5]
+        end
+
+      end
+
+      describe "Applications" do
+
+        example "a 90-day moving mean" do
+          skip "#moving_map is yet to be implemented"
+        end
+
+      end
+
+      describe "Properties & Relations" do
+
+        example "#moving_average is a sequence of means" do
+          skip "#moving_average is yet to be implemented"
         end
 
       end

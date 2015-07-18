@@ -2,13 +2,13 @@
 
 [![Gem Version](https://badge.fury.io/rb/mll.svg)](http://badge.fury.io/rb/mll)
 
-## What
+### What
 
 This gem isn't supposed to mimic all data types, exact syntax of Wolfram Mathematica or make Ruby able to make the same visualisations.
 
 The main goal is to make Ruby more powerful by including the most used functions, that Ruby lacks, such as `Table[]`, `FoldList[]`, etc. Visualisations are possible later by using additional gems.
 
-## Why
+### Why
 
 0. `::map` can map Arrays at specified depth!
 1. One of the most useful things is automatic zipping vectors (`Array`s) when you apply scalar functions to them. https://reference.wolfram.com/language/ref/Listable.html
@@ -18,7 +18,7 @@ The main goal is to make Ruby more powerful by including the most used functions
 5. `::nest` (n times) and `::nest_list` for repetitive applying the same function -- `::nest_while` and `::nest_while_list` are going to be implemented later
 6. `::tally` -- shortcut to a probably the most common usage of `#group_by` -- calculating total occurences.
 
-## How
+### How
 
     MLL::range[ 2, 3 ] # => 2..3
     MLL::range[[2, 3]] # => [1..2, 1..3]
@@ -77,11 +77,11 @@ The main goal is to make Ruby more powerful by including the most used functions
 
 Note that to see some of above examples working in the same way you need `.to_a`, `.map(&:to_a)` or even `.to_a.map(&:to_a)` since lazyness is intensively used.
 
-## Installation
+### Installation
 
     $ gem install mll
 
-## Testing with RSpec before contributing
+### Testing with RSpec before contributing
 
     rspec
 
@@ -89,7 +89,7 @@ or
 
     rake spec
 
-## TODO (this section is filled automatically by `rake todo` task -- do not remove)
+### TODO (this section is filled automatically by `rake todo` task -- do not remove)
 
 #### lib/mll.rb
 
@@ -97,7 +97,12 @@ or
 module MLL
   class << self
     def dimensions
-      # TODO refactor into depth-first traversing
+      lambda do |list, limit = nil|
+        enumerator = Enumerator.new do |e|
+          while list.map(&:class).uniq == [Array] &&
+            # TODO refactor into depth-first yielding
+    def nest_while
+      # TODO finish me
     def fold_list
       lambda do |x, list, f = nil|
         # TODO use Ruby#inject ?
@@ -121,6 +126,7 @@ module MLL
 # TODO elegantly get rid of repetitive type checks
 # TODO ? let(:fake_lambda){ ->(*args){fail} }
 # TODO rewrite all Lazy#to_a into Lazy#force (it's not recursive and not documented)
+# TODO maybe make indexes count from 0 not 1
 describe MLL do
   describe "List Manipulation" do
     describe "Constructing Lists" do
@@ -153,6 +159,22 @@ describe MLL do
   describe "Functional Programming" do
     describe "Iteratively Applying Functions" do
       # TODO move #nest_list and #fold_list and others here?
+      # TODO examples in README.rb
+      describe "#nest_while" do
+        describe "Details:" do
+          # TODO a lot
+        describe "Scope:" do
+          # TODO "always compare all values generated" do
+          # TODO "compare the last two values generated" do
+          # TODO "start comparisons after 4 iterations, and compare using the 4 last values" do
+          # TODO "start comparisons after 4 iterations, and compare using the 6 last values" do
+          # TODO example "stop after at most 4 iterations, even if the test is still true" do
+        describe "Generalizations & Extensions:" do
+          # TODO "return the last value for which the condition was still true" do
+        describe "Applications:" do
+          # TODO example "find the next twin prime after 888" do
+        describe "Properties & Relations:" do
+          # TODO "#nest_while can be expressed in terms of a while loop" do
 # TODO http://reference.wolfram.com/language/guide/HandlingArraysOfData.html
 # TODO http://reference.wolfram.com/language/guide/ComputationWithStructuredDatasets.html
 ```

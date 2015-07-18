@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "mll"
-  spec.version       = "2.0.0"
+  spec.version       = "2.1.0"
   spec.authors       = ["Victor Maslov"]
   spec.email         = ["nakilon@gmail.com"]
   spec.summary       = "Mathematica Language Library in Ruby"
