@@ -18,6 +18,10 @@ require_relative File.join "..", "lib", "mll"
 
 # TODO maybe make indexes count from 0 not 1
 
+
+# File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
+
+
 # http://reference.wolfram.com/language/guide/LanguageOverview.html
 describe MLL do
 

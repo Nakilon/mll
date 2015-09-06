@@ -11,7 +11,6 @@ rvm:
  - 2.2.0
  - "2.2"
  - ruby-head
- - jruby-18mode
  - jruby-19mode
  - jruby-head
  - rbx
@@ -21,25 +20,24 @@ os:
   - osx
 matrix:
   allow_failures:
-    - rvm: 1.9.2 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
+    - rvm: 1.9.2 # "undefined method `lazy' for []:Array"
       os: linux
     - rvm: 1.9.2 # "Requested binary installation but no rubies are available to download"
       os: osx
-    - rvm: 1.9.3 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
-      os: linux
-    - rvm: 1.9.3 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
-      os: osx
+    - rvm: 1.9.3 # "undefined method `lazy' for []:Array"
     - rvm: "2.2" # "Requested binary installation but no rubies are available to download"
       os: osx
     - rvm: ruby-head # "undefined method `hexdigest' for #<OpenSSL::Digest:0x007fda73e3b458>"
       os: osx
-    - rvm: jruby-19mode # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
+    - rvm: jruby-19mode # "undefined method `lazy' for []:Array"
       os: linux
     - rvm: jruby-19mode # "Requested binary installation but no rubies are available to download"
       os: osx
     - rvm: jruby-head # 4 failures in #map
     - rvm: rbx # 5 failures
     - rvm: rbx-2 # 5 failures
+env:
+  - rvm_max_time_flag=60
 before_install:
   - gem install bundler
 script: rake spec
