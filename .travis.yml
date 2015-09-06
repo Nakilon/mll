@@ -1,6 +1,5 @@
 language: ruby
 rvm:
- - 1.8.7
  - 1.9.2
  - 1.9.3
  - 2.0.0
@@ -8,8 +7,8 @@ rvm:
  - 2.1.0
  - 2.1.2
  - 2.1.3
- - 2.2.0
  - "2.1"
+ - 2.2.0
  - "2.2"
  - ruby-head
  - jruby-18mode
@@ -17,52 +16,30 @@ rvm:
  - jruby-head
  - rbx
  - rbx-2
- - ree
 os:
   - linux
   - osx
 matrix:
   allow_failures:
-    - rvm: 1.8.7 # needs syntax edits; can't debug: https://github.com/sstephenson/rbenv/issues/778
-      os: linux
-    - rvm: 1.8.7 # "Requested binary installation but no rubies are available to download"
-      os: osx
-    - rvm: 1.9.2 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] }; 0
+    - rvm: 1.9.2 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
       os: linux
     - rvm: 1.9.2 # "Requested binary installation but no rubies are available to download"
       os: osx
-    - rvm: 1.9.3 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] }; 0
+    - rvm: 1.9.3 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
       os: linux
-    - rvm: 1.9.3 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] }; 0
+    - rvm: 1.9.3 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
       os: osx
-    - rvm: 2.0.0-p451 # "Perhaps you need to update Bundler by running `gem install bundler`?"
+    - rvm: "2.2" # "Requested binary installation but no rubies are available to download"
       os: osx
-    - rvm: 2.1.0 # "Perhaps you need to update Bundler by running `gem install bundler`?"
-      os: linux
-    - rvm: 2.1.2 # "Perhaps you need to update Bundler by running `gem install bundler`?"
-      os: linux
-    - rvm: ruby-head # "/Users/travis/build.sh: line 175: bundle: command not found"
+    - rvm: ruby-head # "undefined method `hexdigest' for #<OpenSSL::Digest:0x007fda73e3b458>"
       os: osx
-    - rvm: jruby-18mode # needs syntax edits; can't debug: https://github.com/sstephenson/rbenv/issues/778
-      os: linux
-    - rvm: jruby-18mode # "Requested binary installation but no rubies are available to download"
-      os: osx
-    - rvm: jruby-19mode # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] }; 0
+    - rvm: jruby-19mode # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
       os: linux
     - rvm: jruby-19mode # "Requested binary installation but no rubies are available to download"
       os: osx
-    - rvm: jruby-head # "Perhaps you need to update Bundler by running `gem install bundler`?"
+    - rvm: jruby-head # 4 failures in #map
     - rvm: rbx # 5 failures
     - rvm: rbx-2 # 5 failures
-    - rvm: ree # needs syntax edits; can't debug: https://github.com/sstephenson/rbenv/issues/778
-      os: linux
-    - rvm: ree # "Requested binary installation but no rubies are available to download"
-      os: osx
 before_install:
-  - gem list bundler
-  - gem install bundler
-  - gem --version
-  - gem update --system
-  - gem --version
   - gem install bundler
 script: rake spec

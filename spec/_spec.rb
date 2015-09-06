@@ -257,7 +257,7 @@ describe MLL do
             expect(table[->(i){ i+2 }, [0, 20, 2]]).to be_a Array
             expect(table[->(i){ i+2 }, [0, 20, 2]]).to eq [2,4,6,8,10,12,14,16,18,20,22]
           end
-          example "make a 4×3 matrix" do
+          example "make a 4x3 matrix" do
             expect(table[->(i,j){ 10*i + j }, 4, 3]).to be_a Array
             expect(table[->(i,j){ 10*i + j }, 4, 3]).to eq [[11,12,13],[21,22,23],[31,32,33],[41,42,43]]
           end
