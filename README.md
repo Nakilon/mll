@@ -1,5 +1,6 @@
 # MLL (Mathematica Language Library)
 
+[![Gem Version](https://badge.fury.io/rb/mll.svg)](http://badge.fury.io/rb/mll)  
 [![Build Status](https://travis-ci.org/Nakilon/mll.svg)](https://travis-ci.org/Nakilon/mll)
 
 ### What
