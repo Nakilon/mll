@@ -51,7 +51,7 @@ describe MLL do
 
         describe "Scope:" do
 
-          example "threads element‐wise over lists" do
+          example "threads element-wise over lists" do
             expect(subtract[[1,2,3,4],0.5]).to be_a Enumerator
             expect(subtract[[1,2,3,4],0.5].to_a).to eq [0.5,1.5,2.5,3.5]
             expect(subtract[6,[3,2]]).to be_a Enumerator
@@ -92,7 +92,7 @@ describe MLL do
 
         describe "Scope:" do
 
-          example "threads element‐wise over lists" do
+          example "threads element-wise over lists" do
             expect(divide[[2,3,4,5],2.0]).to be_a Enumerator
             expect(divide[[2,3,4,5],2.0].to_a).to eq [1,1.5,2,2.5]
             expect(divide[6,[3,2]]).to be_a Enumerator
@@ -140,7 +140,7 @@ describe MLL do
           example "sums numbers" do
             expect(plus[2,3,4]).to eq 9
           end
-          example "threads element‐wise over lists" do
+          example "threads element-wise over lists" do
             # idk why not in Scope
             expect(plus[[3,4,5],2]).to be_a Enumerator
             expect(plus[[3,4,5],2].to_a).to eq [5,6,7]
@@ -154,7 +154,7 @@ describe MLL do
 
         describe "Scope:" do
 
-          example "threads element‐wise over lists" do
+          example "threads element-wise over lists" do
             expect(plus[[10,20,30],[1,2,3]]).to be_a Enumerator
             expect(plus[[10,20,30],[1,2,3]].to_a).to eq [11,22,33]
             expect(plus[[[1,2],[3,4]],5]).to be_a Enumerator
@@ -198,7 +198,7 @@ describe MLL do
           example "multiplies numbers" do
             expect(times[2,3,4]).to eq 24
           end
-          example "threads element‐wise over lists" do
+          example "threads element-wise over lists" do
             expect(times[[3,4,5],2]).to be_a Enumerator
             expect(times[[3,4,5],2].to_a).to eq [6,8,10]
             expect(times[2,3,[4,5]]).to be_a Enumerator
@@ -211,7 +211,7 @@ describe MLL do
 
         describe "Scope:" do
 
-          example "threads element‐wise over lists" do
+          example "threads element-wise over lists" do
             expect(times[[2,3],[4,5]]).to be_a Enumerator
             expect(times[[2,3],[4,5]].to_a).to eq [8,15]
             expect(times[[[1,2],[3,4]],5]).to be_a Enumerator
@@ -791,6 +791,8 @@ describe MLL do
       # http://reference.wolfram.com/language/ref/NestWhile.html
       describe "#nest_while" do
 
+        # TODO examples to README.md
+
         describe "Details:" do
           # TODO a lot
         end
@@ -898,6 +900,8 @@ describe MLL do
 
     # http://reference.wolfram.com/language/ref/Mean.html
     describe "#mean" do
+
+      # TODO examples to README.md
 
       describe "Basic Examples" do
 
