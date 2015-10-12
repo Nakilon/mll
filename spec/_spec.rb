@@ -18,6 +18,8 @@ require_relative File.join "..", "lib", "mll"
 
 # TODO maybe make indexes count from 0 not 1
 
+# TODO merge similar examples
+
 
 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
 
@@ -261,6 +263,10 @@ describe MLL do
             expect(table[->(i){ i+2 }, [0, 20, 2]]).to be_a Array
             expect(table[->(i){ i+2 }, [0, 20, 2]]).to eq [2,4,6,8,10,12,14,16,18,20,22]
           end
+          example "a list of 10 x's" do
+            expect(table[?x, 10]).to be_a Array
+            expect(table[?x, 10]).to eq [?x]*10
+          end
           example "make a 4x3 matrix" do
             expect(table[->(i,j){ 10*i + j }, 4, 3]).to be_a Array
             expect(table[->(i,j){ 10*i + j }, 4, 3]).to eq [[11,12,13],[21,22,23],[31,32,33],[41,42,43]]
@@ -268,7 +274,7 @@ describe MLL do
 
         end
 
-        example "table(lambda, n1, min..max, [max, min, -step])" do
+        example "table[lambda, n1, min..max, [max, min, -step]]" do
           expect(table[->(i,j,k){ [i,j,k] }, 3, 2..3, [5, 1, -2]]).to be_a Array
           expect(table[->(i,j,k){ [i,j,k] }, 3, 2..3, [5, 1, -2]]).to eq \
           [
@@ -293,7 +299,7 @@ describe MLL do
 
         describe "Applications:" do
 
-          example "column table(binomial, )" do
+          example "column table[binomial, ]" do
             skip "#binomial and #column are yet to be implemented"
           end
 
@@ -327,15 +333,15 @@ describe MLL do
 
         describe "Basic Examples:" do
 
-          example "range(n)" do
+          example "range[n]" do
             expect(range[4]).to be_a Enumerator
             expect(range[4].to_a).to eq [1,2,3,4]
           end
-          example "range(n1, n2)" do
+          example "range[n1, n2]" do
             expect(range[2,5]).to be_a Enumerator
             expect(range[2,5].to_a).to eq [2,3,4,5]
           end
-          example "range(min, max, step)" do
+          example "range[min, max, step]" do
             expect(range[1,2,0.5]).to be_a Enumerator
             expect(range[1,2,0.5].to_a).to eq [1,1.5,2] # can be precision problems
             expect(range[2,6,2].to_a).to eq [2,4,6]
@@ -345,7 +351,7 @@ describe MLL do
         end
 
         # NOTE: Wolfram Mathematica can't do this
-        example "range(max, min, -step)" do
+        example "range[max, min, -step]" do
           expect(range[10,-5,-2]).to be_a Enumerator
           expect(range[10,-5,-2].to_a).to eq [10,8,6,4,2,0,-2,-4]
           expect(range[3,1,-1].to_a).to eq [3,2,1]
@@ -385,7 +391,7 @@ describe MLL do
 
         end
 
-        example "range(min..max)" do
+        example "range[min..max]" do
           expect(range[1..3]).to be_a Enumerator
           range[1..3].each do |i|
             expect(i).to be_a Enumerator
@@ -450,7 +456,7 @@ describe MLL do
           end
 
           # NOTE: Wolfram Mathematica can't do this
-          example "subdivide(max, min, n)" do
+          example "subdivide[max, min, n]" do
             expect(subdivide[1,-1,8]).to be_a Enumerator
             expect(subdivide[1,-1,8].to_a).to eq [1,0.75,0.5,0.25,0,-0.25,-0.5,-0.75,-1]
           end
@@ -459,7 +465,7 @@ describe MLL do
 
         describe "Properties & Relations:" do
 
-          example "subdivide[xmin,xmax,n] is equivalent to xmin+(xmax-xmin)Range[0,n]/n" do
+          example "subdivide[xmin, xmax, n] is equivalent to xmin+(xmax-xmin)Range[0,n]/n" do
             expect(subdivide[2,10,4].to_a).to eq plus[2,divide[times[10-2,range[0,4]],4]].to_a
           end
 
@@ -622,7 +628,7 @@ describe MLL do
 
         # TODO we'll need less nested mappings when we implement stop on depths depletion
 
-        describe "Details and Options:" do
+        describe "Details:" do
 
           example "levels n1 though n2" do
             expect(map[[1,[2,[3,[4,[5,6]]]]], [2,4], ->(i){ [i] }]).to be_a Enumerator
@@ -875,12 +881,10 @@ describe MLL do
           expect(tally[[1, 1, 2, 1, 3, 2, 1]]).to be_a Hash
           expect(tally[[1, 1, 2, 1, 3, 2, 1]]).to eq({1=>4, 2=>2, 3=>1})
         end
-
         example "use test argument to count elements with the same class" do
           expect(tally[[[1,2], [1,2,3,4], 1, [1,2,3,4], 1], ->(i,j){ i.class == j.class }]).to be_a Hash
           expect(tally[[[1,2], [1,2,3,4], 1, [1,2,3,4], 1], ->(i,j){ i.class == j.class }]).to eq({[1,2]=>3, 1=>2})
         end
-
         example "count the instances of randomly generated integers" do
           expect(( r = Random.new(0); tally[Array.new(50){ r.rand 10 }] )).to be_a Hash
           expect(( r = Random.new(0); tally[Array.new(50){ r.rand 10 }] )).to eq({5=>4, 0=>6, 3=>10, 7=>7, 9=>5, 2=>4, 4=>3, 6=>2, 8=>5, 1=>4})
@@ -893,7 +897,6 @@ describe MLL do
         example "elements with highest frequencies are given by #commonest" do
           skip "#commonest is yet to be implemented"
         end
-
         example "#tally is a discrete analog of #bincounts" do
           skip "#bincounts is yet to be implemented"
         end
@@ -907,7 +910,7 @@ describe MLL do
 
       # TODO examples to README.md
 
-      describe "Basic Examples" do
+      describe "Basic Examples:" do
 
         example "mean of numeric values" do
           expect(mean[[1.21, 3.4, 2.15, 4, 1.55]]).to eq 2.462
@@ -919,7 +922,7 @@ describe MLL do
 
       end
 
-      describe "Applications" do
+      describe "Applications:" do
 
         example "a 90-day moving mean" do
           skip "#moving_map is yet to be implemented"
@@ -927,7 +930,7 @@ describe MLL do
 
       end
 
-      describe "Properties & Relations" do
+      describe "Properties & Relations:" do
 
         example "#moving_average is a sequence of means" do
           skip "#moving_average is yet to be implemented"

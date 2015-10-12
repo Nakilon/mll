@@ -7,7 +7,7 @@ module MLL
         list = [list]
         enumerator = Enumerator.new do |e|
           # String.size shall not pass
-          while list.map(&:class).uniq == [Array] &&
+          while list.all?{ |i| i.respond_to? :each } &&
                 list.map(&:size).uniq.size == 1
             # TODO refactor into depth-first yielding
             e << list.first.size
@@ -103,7 +103,7 @@ module MLL
               # "undefined method `replace' for #<Enumerator::Lazy: []>"
               ai.replace ri.first.map{ |i|
                 if ri.size == 1
-                  f.call(*ai, i)
+                  f.respond_to?(:call) ? f.call(*ai, i) : f
                 else
                   [*ai.dup, i].tap{ |t| stack << [t, ri.drop(1)] }
                 end
