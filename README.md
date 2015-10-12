@@ -100,7 +100,7 @@ module MLL
     def dimensions
       lambda do |list, limit = nil|
         enumerator = Enumerator.new do |e|
-          while list.map(&:class).uniq == [Array] &&
+          while list.all?{ |i| i.respond_to? :each } &&
             # TODO refactor into depth-first yielding
     def nest_while
       # TODO finish me
@@ -116,7 +116,12 @@ module MLL
           }]].tap do |stack|
             stack.each do |ai, ri|
               # TODO try to make #table lazy (Enumerator instead of Array)
+    def grid
+      lambda do |table, **options|
+        # TODO smth with this #.all?
+        # TODO https://reference.wolfram.com/language/ref/Alignment.html
   # TODO not sure if we need any other kind of Listability except of #range[[Array]]
+  # TODO #power[]
 ```
 
 #### spec/_spec.rb
@@ -128,6 +133,8 @@ module MLL
 # TODO ? let(:fake_lambda){ ->(*args){fail} }
 # TODO rewrite all Lazy#to_a into Lazy#force (it's not recursive and not documented)
 # TODO maybe make indexes count from 0 not 1
+# TODO merge similar examples
+# TODO deprecate tests that would obviously fail another tests
 describe MLL do
   describe "List Manipulation" do
     describe "Constructing Lists" do
@@ -142,7 +149,7 @@ describe MLL do
           # TODO maybe move it to README.md
       describe "#map" do
         # TODO we'll need less nested mappings when we implement stop on depths depletion
-        describe "Details and Options:" do
+        describe "Details:" do
           example "levels n1 though n2" do
             expect(map[[1,[2,[3,[4,[5,6]]]]], [2,4], ->(i){ [i] }].
               # TODO smth _<>
@@ -162,6 +169,7 @@ describe MLL do
       # TODO move #nest_list and #fold_list and others here?
       # TODO examples in README.rb
       describe "#nest_while" do
+        # TODO examples to README.md
         describe "Details:" do
           # TODO a lot
         describe "Scope:" do
@@ -176,6 +184,65 @@ describe MLL do
           # TODO example "find the next twin prime after 888" do
         describe "Properties & Relations:" do
           # TODO "#nest_while can be expressed in terms of a while loop" do
+  describe "Numerical Data" do
+    describe "#mean" do
+      # TODO examples to README.md
+  describe "Grids & Tables" do
+    describe "#grid" do
+      describe "Details:" do
+        # TODO SpanFromLeft SpanFromAbove SpanFromBoth
+        # TODO The following options can be given
+        # TODO Common settings for Frame
+        # TODO The spec(k) can have the following forms
+        # TODO With ItemSize->Automatic will break elements across multiple lines
+        # TODO "settings can be used for BaselinePosition" do
+      describe "Scope:" do
+        # TODO Draw all the frames in red
+        # TODO Put a frame around the first row and column
+        # TODO Draw different frames with different styles
+        # TODO Put dividers at all horizontal positions
+        # TODO Put dividers at all vertical positions
+        # TODO Put dividers at the third horizontal and second vertical positions
+        # TODO Make the element 4 span the column to its right
+        # TODO Make it span three rows
+        # TODO Span throughout a 2×2 block
+        # TODO Draw the grid with a pink background
+        # TODO Alternating pink and yellow at successive horizontal positions
+        # TODO Alternating pink and yellow at successive vertical positions
+        # TODO Make the grid contents red
+        # TODO "set the horizontal spacing between items" do
+        # TODO "set the horizontal and vertical spacings" do
+        # TODO "grids can be nested" do
+      describe "Options:" do
+        # TODO "align elements around the center of the grid" do
+        # TODO "align numbers on the decimal point" do
+        # TODO draw the grid with a pink background
+        # TODO Pink and gray backgrounds for the first and second columns
+        # TODO An equivalent syntax
+        # TODO Pink and gray backgrounds for the first and second rows
+        # TODO Alternating pink and gray backgrounds
+        # TODO Alternating backgrounds with yellow superimposed in the first and last positions
+        # TODO Set the background for specific items
+        # TODO Set the background for a subregion of the grid
+        # TODO Draw all interior dividers
+        # TODO Draw a divider at every other horizontal position
+        # TODO Include the final position
+        # TODO Draw dividers with specified styles
+        # TODO "frame specific elements" do
+        # TODO "frame a region" do
+        # TODO "make each item a fixed number of character-widths wide" do
+        # TODO "ItemSize->All makes all items the same size" do
+        # TODO "prevent line-wrapping" do
+        # TODO "set one overall style for grid items" do
+        # TODO "style specific elements" do
+        # TODO "style a region" do
+        # TODO "insert no additional space between rows or columns" do
+        # TODO "specify spacing with numeric values" do
+        # TODO "use different spacings at the first vertical divider" do
+      describe "Properties & Relations:" do
+        # TODO "the elements of a Grid can be extracted with #[]" do
+      describe "Neat examples:" do
+        # TODO "a Sudoku grid" do
 # TODO http://reference.wolfram.com/language/guide/HandlingArraysOfData.html
 # TODO http://reference.wolfram.com/language/guide/ComputationWithStructuredDatasets.html
 ```
