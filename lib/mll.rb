@@ -114,6 +114,39 @@ module MLL
       end
     end
 
+    # http://www.unicode.org/charts/PDF/U2500.pdf
+    # https://en.wikipedia.org/wiki/Box_Drawing
+    def grid
+      lambda do |table, **options|
+        raise ArgumentError.new("unknown value of :alignment option '#{options[:alignment]}'") unless \
+          alignment = {
+            nil => :center,
+            :center => :center,
+            :left => :ljust,
+            :right => :rjust,
+          }[options[:alignment]]
+        frames = {
+          nil  => "              ",
+          true => "┃ ┏┓ ┗┛━ ┃━━┃ ",
+          :all => "┃┃┏┓╋┗┛━━┣┳┻┫ ",
+        }[options[:frame]]
+        raise ArgumentError.new("unknown value of :frame option '#{options[:frame]}'") if options[:frame] && !frames
+        # TODO smth with this #.all?
+        table = [table] unless table.all?{ |e| e.respond_to? :each }
+        width = table.map(&:size).max - 1
+        strings = table.map{ |row| row.dup.tap{ |a| a[width] = a[width] }.map(&:to_s) }
+        sizes = strings.transpose.map{ |col| col.map(&:size).max }
+        # TODO https://reference.wolfram.com/language/ref/Alignment.html
+        [
+          [frames[2], sizes.map{ |size| frames[7] * size }.join(frames[10]), frames[3]].join,
+          strings.map{ |row| [frames[0], row.zip(sizes).map{ |str, size| str.method(alignment).call size }.join(frames[1]), frames[0]].join }.join(
+            [?\n, frames[9], sizes.map{ |size| frames[8] * size }.join(frames[4]), frames[12], ?\n].join
+          ),
+          [frames[5], sizes.map{ |size| frames[7] * size }.join(frames[11]), frames[6]].join,
+        ].join(?\n) + ?\n
+      end
+    end
+
     def define_listable_function name, &block
       (class << self; self end).class_eval do
         define_method name do
@@ -175,6 +208,7 @@ module MLL
   define_listable_function(:divide)   { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] / args[1] }
   define_listable_function(:_plus)    { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] + args[1] }
   define_listable_function(:_times)   { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] * args[1] }
+  # TODO #power[]
   # define_listable_function (:power)   { |*args| raise ArgumentError.new("need two arguments") unless args.size == 2 ; args[0] ** args[1] }
 
   # http://reference.wolfram.com/language/ref/Orderless.html

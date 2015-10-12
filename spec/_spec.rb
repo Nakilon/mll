@@ -19,6 +19,7 @@ require_relative File.join "..", "lib", "mll"
 # TODO maybe make indexes count from 0 not 1
 
 # TODO merge similar examples
+# TODO deprecate tests that would obviously fail another tests
 
 
 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
@@ -935,6 +936,168 @@ describe MLL do
         example "#moving_average is a sequence of means" do
           skip "#moving_average is yet to be implemented"
         end
+
+      end
+
+    end
+
+  end
+
+  # https://reference.wolfram.com/language/guide/GridsAndTables.html
+  describe "Grids & Tables" do
+
+    # https://reference.wolfram.com/language/ref/Grid.html
+    describe "#grid" do
+
+      describe "Details:" do
+
+        example "#normal[grid] extracts the list of lists that make up a grid" do
+          skip "#normal is yet to be implemented"
+        end
+        example "the lists do not all need to be the same length" do
+          expect(grid[[[1],[2,3]]].to_s).to eq "     \n 1   \n     \n 2 3 \n     \n"
+        end
+        # TODO SpanFromLeft SpanFromAbove SpanFromBoth
+        # TODO The following options can be given
+        # TODO Common settings for Frame
+        # TODO The spec(k) can have the following forms
+        # TODO With ItemSize->Automatic will break elements across multiple lines
+        # TODO "settings can be used for BaselinePosition" do
+
+      end
+
+      describe "Basic examples:" do
+
+        example "display elements in a grid" do
+          expect(grid[[%w{a b c}, %w{x y z}]]).to eq \
+            "       \n" \
+            " a b c \n" \
+            "       \n" \
+            " x y z \n" \
+            "       \n"
+        end
+        example "put a frame around every element" do
+          expect(grid[[%w{a b c}, %w{x y z}], frame: :all]).to eq \
+            "┏━┳━┳━┓\n" \
+            "┃a┃b┃c┃\n" \
+            "┣━╋━╋━┫\n" \
+            "┃x┃y┃z┃\n" \
+            "┗━┻━┻━┛\n"
+        end
+
+      end
+
+      describe "Scope:" do
+
+        example "create a grid with a single row" do
+          expect(grid[fold_list[range[5], times].to_a]).to eq \
+            "              \n" \
+            " 1 2 6 24 120 \n" \
+            "              \n"
+        end
+        example "put a frame around the whole grid" do
+          expect(grid[table[?x, [3], [7]], frame: true]).to eq \
+            "┏━━━━━━━━━━━━━┓\n" \
+            "┃x x x x x x x┃\n" \
+            "┃             ┃\n" \
+            "┃x x x x x x x┃\n" \
+            "┃             ┃\n" \
+            "┃x x x x x x x┃\n" \
+            "┗━━━━━━━━━━━━━┛\n"
+        end
+        example "put a frame around every element" do
+          expect(grid[table[?x, [3], [7]], frame: :all]).to eq \
+            "┏━┳━┳━┳━┳━┳━┳━┓\n" \
+            "┃x┃x┃x┃x┃x┃x┃x┃\n" \
+            "┣━╋━╋━╋━╋━╋━╋━┫\n" \
+            "┃x┃x┃x┃x┃x┃x┃x┃\n" \
+            "┣━╋━╋━╋━╋━╋━╋━┫\n" \
+            "┃x┃x┃x┃x┃x┃x┃x┃\n" \
+            "┗━┻━┻━┻━┻━┻━┻━┛\n"
+        end
+        # TODO Draw all the frames in red
+        # TODO Put a frame around the first row and column
+        # TODO Draw different frames with different styles
+        # TODO Put dividers at all horizontal positions
+        # TODO Put dividers at all vertical positions
+        # TODO Put dividers at the third horizontal and second vertical positions
+        # TODO Make the element 4 span the column to its right
+        # TODO Make it span three rows
+        # TODO Span throughout a 2×2 block
+        example "align contents to the left" do
+          expect(grid[[["a", "bbbb"], ["ccc", "d"]], frame: :all, alignment: :left]).to eq \
+            "┏━━━┳━━━━┓\n" \
+            "┃a  ┃bbbb┃\n" \
+            "┣━━━╋━━━━┫\n" \
+            "┃ccc┃d   ┃\n" \
+            "┗━━━┻━━━━┛\n"
+        end
+        example "align contents to the right" do
+          expect(grid[[["a", "bbbb"], ["ccc", "d"]], frame: :all, alignment: :right]).to eq \
+            "┏━━━┳━━━━┓\n" \
+            "┃  a┃bbbb┃\n" \
+            "┣━━━╋━━━━┫\n" \
+            "┃ccc┃   d┃\n" \
+            "┗━━━┻━━━━┛\n"
+        end
+        # TODO Draw the grid with a pink background
+        # TODO Alternating pink and yellow at successive horizontal positions
+        # TODO Alternating pink and yellow at successive vertical positions
+        # TODO Make the grid contents red
+        example "leave the same amount of space for all items" do
+          skip "#power is yet to be implemented"
+          expect(grid[table[power, [5, 5]], frame: :all, alignment: :right, itemsize: :all]).to eq \
+            "┏━━━┳━━━━┓\n" \
+            "┃  a┃bbbb┃\n" \
+            "┣━━━╋━━━━┫\n" \
+            "┃ccc┃   d┃\n" \
+            "┗━━━┻━━━━┛\n"
+        end
+        # TODO "set the horizontal spacing between items" do
+        # TODO "set the horizontal and vertical spacings" do
+        # TODO "grids can be nested" do
+
+      end
+
+      describe "Options:" do
+
+        # TODO "align elements around the center of the grid" do
+        # TODO "align numbers on the decimal point" do
+        # TODO draw the grid with a pink background
+        # TODO Pink and gray backgrounds for the first and second columns
+        # TODO An equivalent syntax
+        # TODO Pink and gray backgrounds for the first and second rows
+        # TODO Alternating pink and gray backgrounds
+        # TODO Alternating backgrounds with yellow superimposed in the first and last positions
+        # TODO Set the background for specific items
+        # TODO Set the background for a subregion of the grid
+        # TODO Draw all interior dividers
+        # TODO Draw a divider at every other horizontal position
+        # TODO Include the final position
+        # TODO Draw dividers with specified styles
+        # TODO "frame specific elements" do
+        # TODO "frame a region" do
+        # TODO "make each item a fixed number of character-widths wide" do
+        # TODO "ItemSize->All makes all items the same size" do
+        # TODO "prevent line-wrapping" do
+        # TODO "set one overall style for grid items" do
+        # TODO "style specific elements" do
+        # TODO "style a region" do
+        # TODO "insert no additional space between rows or columns" do
+        # TODO "specify spacing with numeric values" do
+        # TODO "use different spacings at the first vertical divider" do
+
+      end
+
+      describe "Properties & Relations:" do
+
+        # TODO "the elements of a Grid can be extracted with #[]" do
+
+      end
+
+      describe "Neat examples:" do
+
+        # TODO "a Sudoku grid" do
 
       end
 
