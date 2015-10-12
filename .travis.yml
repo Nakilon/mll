@@ -40,4 +40,5 @@ env:
   - rvm_max_time_flag=60
 before_install:
   - gem install bundler
+  - rm Gemfile.lock
 script: rake spec
