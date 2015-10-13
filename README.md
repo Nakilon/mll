@@ -118,6 +118,7 @@ module MLL
               # TODO try to make #table lazy (Enumerator instead of Array)
     def grid
       lambda do |table, **options|
+        # TODO negative spacings?
         # TODO smth with this #.all?
         # TODO https://reference.wolfram.com/language/ref/Alignment.html
   # TODO not sure if we need any other kind of Listability except of #range[[Array]]
@@ -210,8 +211,6 @@ describe MLL do
         # TODO Alternating pink and yellow at successive horizontal positions
         # TODO Alternating pink and yellow at successive vertical positions
         # TODO Make the grid contents red
-        # TODO "set the horizontal spacing between items" do
-        # TODO "set the horizontal and vertical spacings" do
         # TODO "grids can be nested" do
       describe "Options:" do
         # TODO "align elements around the center of the grid" do

@@ -118,6 +118,10 @@ module MLL
     # https://en.wikipedia.org/wiki/Box_Drawing
     def grid
       lambda do |table, **options|
+        # TODO negative spacings?
+        options[:spacings] ||= [1, 1]
+        spacings_horizontal, spacings_vertical = [*options[:spacings]]
+        spacings_vertical ||= 1
         raise ArgumentError.new("unknown value of :alignment option '#{options[:alignment]}'") unless \
           alignment = {
             nil => :center,
@@ -135,14 +139,24 @@ module MLL
         table = [table] unless table.all?{ |e| e.respond_to? :each }
         width = table.map(&:size).max - 1
         strings = table.map{ |row| row.dup.tap{ |a| a[width] = a[width] }.map(&:to_s) }
-        sizes = strings.transpose.map{ |col| col.map(&:size).max }
+        sizes = strings.transpose.map{ |col| col.map(&:size).max + [spacings_horizontal * 2 - 2, 0].max }
         # TODO https://reference.wolfram.com/language/ref/Alignment.html
+        border_vertical  = [frames[9], sizes.map{ |size|  frames[8] * size }.join((frames[4] unless spacings_horizontal.zero?)), frames[12]]
+        spacing_vertical = [frames[0], sizes.map{ |size| frames[13] * size }.join((frames[0] unless spacings_horizontal.zero?)), frames[0]]
+        gap_vertical = lambda do |i|
+          j = i - 1
+          [*-j..j].map{ |k| [border_vertical][k] || spacings_vertical }
+        end.call spacings_vertical
         [
-          [frames[2], sizes.map{ |size| frames[7] * size }.join(frames[10]), frames[3]].join,
-          strings.map{ |row| [frames[0], row.zip(sizes).map{ |str, size| str.method(alignment).call size }.join(frames[1]), frames[0]].join }.join(
-            [?\n, frames[9], sizes.map{ |size| frames[8] * size }.join(frames[4]), frames[12], ?\n].join
+          [frames[2], sizes.map{ |size| frames[7] * size }.join((frames[10] unless spacings_horizontal.zero?)), frames[3]].join,
+          *([spacing_vertical.join] * [spacings_vertical - 1, 0].max),
+          strings.map{ |row| [frames[0], row.zip(sizes).map{ |str, size|
+            str.method(alignment).call(size)
+          }.join((frames[1] unless spacings_horizontal.zero?)), frames[0]].join }.join(
+            ?\n + gap_vertical.map{ |gap| gap.join + ?\n }.join
           ),
-          [frames[5], sizes.map{ |size| frames[7] * size }.join(frames[11]), frames[6]].join,
+          *([spacing_vertical.join] * [spacings_vertical - 1, 0].max),
+          [frames[5], sizes.map{ |size| frames[7] * size }.join((frames[11] unless spacings_horizontal.zero?)), frames[6]].join,
         ].join(?\n) + ?\n
       end
     end

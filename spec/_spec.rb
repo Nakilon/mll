@@ -955,7 +955,12 @@ describe MLL do
           skip "#normal is yet to be implemented"
         end
         example "the lists do not all need to be the same length" do
-          expect(grid[[[1],[2,3]]].to_s).to eq "     \n 1   \n     \n 2 3 \n     \n"
+          expect(grid[[[1],[2,3]]].to_s).to eq \
+            "     \n" \
+            " 1   \n" \
+            "     \n" \
+            " 2 3 \n" \
+            "     \n"
         end
         # TODO SpanFromLeft SpanFromAbove SpanFromBoth
         # TODO The following options can be given
@@ -1053,10 +1058,77 @@ describe MLL do
             "┃ccc┃   d┃\n" \
             "┗━━━┻━━━━┛\n"
         end
-        # TODO "set the horizontal spacing between items" do
-        # TODO "set the horizontal and vertical spacings" do
+
         # TODO "grids can be nested" do
 
+        # https://reference.wolfram.com/language/ref/Spacings.html
+        describe "option :spacing" do
+
+          example "set the horizontal spacing between items" do
+            expect(grid[table[?x, [3], [3]], spacings: 2, frame: :all]).to eq \
+              "┏━━━┳━━━┳━━━┓\n" \
+              "┃ x ┃ x ┃ x ┃\n" \
+              "┣━━━╋━━━╋━━━┫\n" \
+              "┃ x ┃ x ┃ x ┃\n" \
+              "┣━━━╋━━━╋━━━┫\n" \
+              "┃ x ┃ x ┃ x ┃\n" \
+              "┗━━━┻━━━┻━━━┛\n"
+          end
+          example "set the horizontal and vertical spacings" do
+            expect(grid[table[?x, [3], [3]], spacings: [2, 0], frame: :all]).to eq \
+              "┏━━━┳━━━┳━━━┓\n" \
+              "┃ x ┃ x ┃ x ┃\n" \
+              "┃ x ┃ x ┃ x ┃\n" \
+              "┃ x ┃ x ┃ x ┃\n" \
+              "┗━━━┻━━━┻━━━┛\n"
+          end
+          example "insert no additional space between columns" do
+            expect(grid[table[?x, [4], [7]], spacings: 0]).to eq \
+              "         \n" \
+              " xxxxxxx \n" \
+              "         \n" \
+              " xxxxxxx \n" \
+              "         \n" \
+              " xxxxxxx \n" \
+              "         \n" \
+              " xxxxxxx \n" \
+              "         \n"
+            expect(grid[table[?x, [4], [7]], spacings: 0, frame: :all]).to eq \
+              "┏━━━━━━━┓\n" \
+              "┃xxxxxxx┃\n" \
+              "┣━━━━━━━┫\n" \
+              "┃xxxxxxx┃\n" \
+              "┣━━━━━━━┫\n" \
+              "┃xxxxxxx┃\n" \
+              "┣━━━━━━━┫\n" \
+              "┃xxxxxxx┃\n" \
+              "┗━━━━━━━┛\n"
+          end
+          example "insert additional space at the second horizontal divider" do
+            skip "automatic"
+            expect(grid[table[?x, [4], [7]], spacings: {2 => 3}, frame: :all]).to eq \
+              "    -    \n" \
+              " xxxxxxx \n" \
+              " xxxxxxx \n" \
+              " xxxxxxx \n" \
+              " xxxxxxx \n" \
+              "         \n"
+          end
+          example "set the size of the grid's margins" do
+            skip "cycling"
+            expect(grid[table[?x, [3], [7]], spacings: [[5, [], 5], [5, [], 5]], frame: :all]).to eq \
+              "    -    \n" \
+              "    -    \n" \
+              " xxxxxxx \n" \
+              " xxxxxxx \n" \
+              " xxxxxxx \n" \
+              " xxxxxxx \n" \
+              "         \n" \
+              "         \n"
+          end
+
+        end
+        
       end
 
       describe "Options:" do
