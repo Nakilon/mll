@@ -1,5 +1,7 @@
 # MLL (Mathematica Language Library)
 
+[![Join the chat at https://gitter.im/Nakilon/mll](https://badges.gitter.im/Nakilon/mll.svg)](https://gitter.im/Nakilon/mll?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Gem Version](https://badge.fury.io/rb/mll.svg)](http://badge.fury.io/rb/mll)  
 [![Build Status](https://travis-ci.org/Nakilon/mll.svg)](https://travis-ci.org/Nakilon/mll)
 
