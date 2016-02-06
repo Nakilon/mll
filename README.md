@@ -136,6 +136,7 @@ module MLL
 # TODO maybe make indexes count from 0 not 1
 # TODO merge similar examples
 # TODO deprecate tests that would obviously fail another tests
+# TODO check if we check for ArgumentError without being sure we raise it
 describe MLL do
   describe "List Manipulation" do
     describe "Constructing Lists" do

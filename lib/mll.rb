@@ -188,12 +188,13 @@ module MLL
     when 3
       case args[2] <=> 0
       when 0 ; raise ArgumentError.new("step can't be zero")
-      when 1 ; Range.new(args[0], args[1]).step args[2]
+      # when 1 ; Range.new(args[0], args[1]).step args[2]
       else
         Enumerator.new do |e|
           from, to, step = *args
-          # while (step > 0) ? from <= to : from >= to
-          while from >= to
+          step = step.abs * (to <=> from)
+          while (step > 0) ? (from <= to) : (from >= to)
+          # while from >= to
             e << from
             from += step
           end

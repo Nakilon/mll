@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mll (2.1.0)
+    mll (2.2.1)
 
 GEM
   remote: https://rubygems.org/
@@ -27,3 +27,6 @@ DEPENDENCIES
   bundler (~> 1.7)
   mll!
   rspec (~> 3.1.0)
+
+BUNDLED WITH
+   1.11.2

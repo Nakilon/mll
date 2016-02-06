@@ -21,6 +21,8 @@ require_relative File.join "..", "lib", "mll"
 # TODO merge similar examples
 # TODO deprecate tests that would obviously fail another tests
 
+# TODO check if we check for ArgumentError without being sure we raise it
+
 
 # File.read("spec/_spec.rb").scan(/.*\n/).each_with_index{ |e,i| p [i+1,e] if e["\xe2\x80\x90"] || e["\xc3\x97"] }; 0
 
@@ -316,6 +318,10 @@ describe MLL do
         example "no args raise ArgumentError" do
           expect{ range[] }.to raise_error ArgumentError
         end
+        example "two args that are not numbers raise ArgumentError" do
+          skip "already caught by Ruby as 'ArgumentError: bad value for range'"
+          expect{ range[8,times] }.to raise_error ArgumentError
+        end
         example "more than 3 args raise ArgumentError" do
           expect{ range[1,2,3,4] }.to raise_error ArgumentError
         end
@@ -351,11 +357,17 @@ describe MLL do
 
         end
 
-        # NOTE: Wolfram Mathematica can't do this
+        # NOTE: even Wolfram Mathematica can't do this
         example "range[max, min, -step]" do
           expect(range[10,-5,-2]).to be_a Enumerator
           expect(range[10,-5,-2].to_a).to eq [10,8,6,4,2,0,-2,-4]
           expect(range[3,1,-1].to_a).to eq [3,2,1]
+        end
+        # NOTE: even I'm not sure about this
+        example "range[max, min, +step]" do
+          expect(range[10,-5,2]).to be_a Enumerator
+          expect(range[10,-5,2].to_a).to eq [10,8,6,4,2,0,-2,-4]
+          expect(range[3,1,1].to_a).to eq [3,2,1]
         end
 
         describe "Generalizations & Extensions:" do
@@ -436,7 +448,7 @@ describe MLL do
 
           example "generates a list of length n+1" do
             expect(subdivide[5]).to be_a Enumerator
-            expect(subdivide[5].size).to eq 6
+            expect(subdivide[5].to_a.size).to eq 6
           end
 
         end
