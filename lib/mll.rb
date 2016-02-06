@@ -175,6 +175,34 @@ module MLL
       end
     end
 
+    def riffle
+      lambda do |*args|
+        case args.size
+          when 2 ; next riffle[*args, [2,-2,2]] unless args[0].size == args[1].size
+            Enumerator.new do |e|
+              args[0].zip(args[1]){ |i, j| e << i << j }
+            end
+          when 3
+            args[1] = [*args[1]]
+            args[2] = [args[2], -2, args[2]] unless args[2].respond_to? :each
+            Enumerator.new do |e|
+              min = (args[2][0] < 0) ? (args[0].size + args[2][0]) : args[2][0] - 1
+              max = (args[2][1] < 0) ? (args[0].size + args[2][1]) : args[2][1]
+              min, max = max, min if args[2][0] < 0
+              step = args[2][2]
+              pos = 0
+              args[0].each_with_index do |x, i|
+                # TODO make it not destructive
+                (pos += 1; e << x)
+                (pos += 1; e << args[1].rotate!.last) if min - 1 <= i && i <= max && (pos - min) % step == 0
+              end
+            end
+        else
+          raise ArgumentError.new("wrong number of arguments (#{args.size} for 2..3)")
+        end
+      end
+    end
+
     def define_listable_function name, &block
       (class << self; self end).class_eval do
         define_method name do

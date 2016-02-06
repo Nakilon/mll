@@ -555,6 +555,84 @@ describe MLL do
 
     end
 
+    # http://reference.wolfram.com/language/guide/RearrangingAndRestructuringLists.html
+    describe "Rearranging & Restructuring Lists" do
+
+      # http://reference.wolfram.com/language/ref/Riffle.html
+      describe "#riffle" do
+
+        example "Mathematica examples are missing the case where two arrays differ by length a lot?"
+
+        describe "Details:" do
+
+          example "riffle[[e],x] gives [e]" do
+            expect(riffle[[1], 0]).to be_a Enumerator
+            expect(riffle[[1], 0].to_a).to eq [1]
+          end
+          example "riffle[list,x] is equivalent to riffle[list,x,[2,-2,2]]" do
+            expect(riffle[[1,2,3,4,5], 0].to_a).to eq riffle[[1,2,3,4,5], 0, [2,-2,2]].to_a
+          end
+          example "riffle[list,x,n] is equivalent to riffle[list,x,[n,-2,n]]" do
+            expect(riffle[[1,2,3,4,5], 0, 3].to_a).to eq riffle[[1,2,3,4,5], 0, [3,-2,3]].to_a
+          end
+
+        end
+
+        describe "Basic Examples:" do
+
+          example "riffle 0 between successive elements in a list" do
+            expect(riffle[range[9], 0]).to be_a Enumerator
+            expect(riffle[range[9], 0].to_a).to eq [1,0,2,0,3,0,4,0,5,0,6,0,7,0,8,0,9]
+          end
+          example "riffle in 0 and 0.0 cyclically" do
+            expect(riffle[range[9], [0,0.0]]).to be_a Enumerator
+            expect(riffle[range[9], [0,0.0]].to_a).to eq [1,0,2,0.0,3,0,4,0.0,5,0,6,0.0,7,0,8,0.0,9]
+          end
+          example "riffle in 0 at every 3rd position" do
+            expect(riffle[range[9], 0, 3]).to be_a Enumerator
+            expect(riffle[range[9], 0, 3].to_a).to eq [1,2,0,3,4,0,5,6,0,7,8,0,9]
+          end
+
+        end
+
+        describe "Scope:" do
+
+          example "start riffling in 0 only at position 5" do
+            expect(riffle[range[9], 0, [5,-1,2]]).to be_a Enumerator
+            expect(riffle[range[9], 0, [5,-1,2]].to_a).to eq [1,2,3,4,0,5,0,6,0,7,0,8,0,9,0]
+          end
+          example "cyclically riffle in 0 and 0.0" do
+            expect(riffle[range[9], [0,0.0], [5,-1,2]]).to be_a Enumerator
+            expect(riffle[range[9], [0,0.0], [5,-1,2]].to_a).to eq [1,2,3,4,0,5,0.0,6,0,7,0.0,8,0,9,0.0]
+          end
+          example "intersperse two lists" do
+            # TODO check how it works for list2.size == list1.size + 1 in Mathematica
+            expect(riffle[[1,2,3,4], [5,6,7,8]]).to be_a Enumerator
+            expect(riffle[[1,2,3,4], [5,6,7,8]].to_a).to eq [1,5,2,6,3,7,4,8]
+          end
+
+        end
+
+        describe "Applications:" do
+
+          example "create a directory name from a path list" do
+            expect(riffle[%w{ usr local bin }, "/"].to_a.join).to eq "usr/local/bin"
+          end
+          example "alternate positive and negative integers" do
+            skip "unary #minus is yet to be implemented"
+            expect(riffle[range[9], minus[range[9]]]).to be_a Enumerator
+            expect(riffle[range[9], minus[range[9]]].to_a).to eq [1,-2,2,-2,3,-3,4,-4,5,-5,6,-6,7,-7,8,-8,9,-9]
+          end
+          example "insert commas at every 4th character" do
+            expect(riffle["4345252523535".chars, ",", [-4,1,-4]].to_a.join).to eq "4,345,252,523,535"
+          end
+
+        end
+
+      end
+
+    end
+
     # http://reference.wolfram.com/language/guide/ApplyingFunctionsToLists.html
     describe "Applying Functions to Lists" do
 
