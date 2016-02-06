@@ -161,6 +161,20 @@ module MLL
       end
     end
 
+    def subdivide
+      lambda do |*args|
+        case args.size
+          when 1 ; subdivide[1, args[0]]
+          when 2 ; subdivide[0, args[0], args[1]]
+          when 3
+            # raise ArgumentError.new("can't divide into 0 parts") if args[2].zero?
+            range[args[0], args[1], (args[1] - args[0]) * 1.0 / args[2]]
+        else
+          raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)")
+        end
+      end
+    end
+
     def define_listable_function name, &block
       (class << self; self end).class_eval do
         define_method name do
@@ -202,20 +216,6 @@ module MLL
       end
     else
       raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)")
-    end
-  end
-
-  def self.subdivide
-    lambda do |*args|
-      case args.size
-        when 1 ; subdivide[1, args[0]]
-        when 2 ; subdivide[0, args[0], args[1]]
-        when 3
-          # raise ArgumentError.new("can't divide into 0 parts") if args[2].zero?
-          range[args[0], args[1], (args[1] - args[0]) * 1.0 / args[2]]
-      else
-        raise ArgumentError.new("wrong number of arguments (#{args.size} for 1..3)")
-      end
     end
   end
 
