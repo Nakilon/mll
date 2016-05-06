@@ -203,6 +203,13 @@ module MLL
       end
     end
 
+    def most
+      # not Enumerator because if the end is invisible we can't stop at -2
+      lambda do |list|
+        list[0..-2]
+      end
+    end
+
     def define_listable_function name, &block
       (class << self; self end).class_eval do
         define_method name do
@@ -269,7 +276,7 @@ module MLL
 
   define_orderless_function(:plus,  0) { |a, b| _plus.call  a, b }
   define_orderless_function(:times, 1) { |a, b| _times.call a, b }
-  
+
   def self.mean
     lambda do |list|
       divide[times[plus[*list], 1.0], list.size]

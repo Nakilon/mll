@@ -121,6 +121,13 @@ module MLL
         # TODO negative spacings?
         # TODO smth with this #.all?
         # TODO https://reference.wolfram.com/language/ref/Alignment.html
+    def riffle
+      lambda do |*args|
+        case args.size
+          when 3
+            Enumerator.new do |e|
+              args[0].each_with_index do |x, i|
+                # TODO make it not destructive
   # TODO not sure if we need any other kind of Listability except of #range[[Array]]
   # TODO #power[]
 ```
@@ -145,6 +152,11 @@ describe MLL do
           # TODO: "Make a triangular array:"
       describe "#range" do
         # TODO take from docs more examples that involve other functions
+    describe "Rearranging & Restructuring Lists" do
+      describe "#riffle" do
+        describe "Scope:" do
+          example "intersperse two lists" do
+            # TODO check how it works for list2.size == list1.size + 1 in Mathematica
     describe "Applying Functions to Lists" do
       describe "#fold_list" do
         describe "Applications:" do
@@ -164,6 +176,8 @@ describe MLL do
           # TODO #mapthread ?
           # TODO #mapindexed ?
           # TODO "negative levels"
+    describe "Elements of Lists" do
+      # TODO #rest
     # TODO http://reference.wolfram.com/language/guide/RearrangingAndRestructuringLists.html
     # TODO http://reference.wolfram.com/language/guide/MathematicalAndCountingOperationsOnLists.html
   describe "Functional Programming" do

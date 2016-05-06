@@ -183,7 +183,7 @@ describe MLL do
             expect(fold_list[0, [1,2,3], plus]).to be_a Enumerator
             expect(fold_list[0, [1,2,3], plus].to_a).to eq [0,1,3,6]
           end
-          
+
         end
 
       end
@@ -798,6 +798,34 @@ describe MLL do
     # http://reference.wolfram.com/language/guide/ElementsOfLists.html
     describe "Elements of Lists" do
 
+      # https://reference.wolfram.com/language/ref/Most.html
+      describe "#most" do
+
+        example "#most[expr] is equivalent to Array#[](0..-2)" do
+          expect(most[[1,2,3,4]].to_a).to eq [1,2,3,4][0..-2]
+        end
+
+        describe "Basic Examples:" do
+
+          example "???" do
+            expect(most[[1,2,3,4]].to_a).to eq [1,2,3]
+          end
+
+        end
+
+        describe "Applications:" do
+
+          example "nest the operation of finding most of a list" do
+            expect(nest_list[[1,2,3,4], 3, most].to_a).to eq [[1,2,3,4], [1,2,3], [1,2], [1]]
+          end
+
+        end
+
+      end
+
+      # TODO #rest
+
+      # https://reference.wolfram.com/language/ref/Dimensions.html
       describe "#dimensions" do
 
         describe "Basic Examples:" do
@@ -959,7 +987,7 @@ describe MLL do
     describe "#tally" do
 
       describe "Details:" do
-        
+
         example "#tally[list] is equivalent to #tally[list,#sameq]" do
           skip "#sameq is yet to be implemented"
         end
@@ -1218,7 +1246,7 @@ describe MLL do
           end
 
         end
-        
+
       end
 
       describe "Options:" do
