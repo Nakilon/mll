@@ -1299,6 +1299,24 @@ end
 # TODO http://reference.wolfram.com/language/guide/HandlingArraysOfData.html
 # TODO http://reference.wolfram.com/language/guide/ComputationWithStructuredDatasets.html
 
+
+describe "core_ext" do
+
+  example "by default core classes are not patched" do
+    expect{ [1,2,3,4].most }.to raise_error NoMethodError
+  end
+
+  example "after core_ext required" do
+    require_relative "../core_ext"
+    aggregate_failures "everything is fine" do
+      expect([1,2,3,4].most).to eq [1,2,3]
+
+    end
+  end
+
+end
+
+
 __END__
 
 Table     Array

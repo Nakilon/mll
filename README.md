@@ -18,25 +18,13 @@ The main goal is to make Ruby more powerful by including the most used functions
 4. `::fold_list` was wanted [here](http://stackoverflow.com/q/1475808/322020) in Ruby while being already implemented as [FoldList[]](http://reference.wolfram.com/language/ref/FoldList.html) in Mathematica and [scanl](http://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#v:scanl) in Haskell
 5. `::nest` (n times) and `::nest_list` for repetitive applying the same function -- `::nest_while` and `::nest_while_list` are going to be implemented later
 6. `::tally` -- shortcut to a probably the most common usage of `#group_by` -- calculating total occurences.
+7. TODO write smth about `::riffle`, `::subdivide`, `::grid`
 
 ### How
 
     MLL::range[ 2, 3 ] # => 2..3
     MLL::range[[2, 3]] # => [1..2, 1..3]
     MLL::range[ 1..3 ] # => [1..1, 1..2, 1..3]
-
-    t = MLL::table[ ->(i,j){ i+j }, [[1, 0, 1]], [[0, 2, 0]] ]
-                       # => [[1, 3, 1],
-                             [0, 2, 0],
-                             [1, 3, 1]]
-    t = MLL::map[ ->(i){ [i] }, t, [2] ]
-                       # => [[ [1], [3], [1] ],
-                             [ [0], [2], [0] ],
-                             [ [1], [3], [1] ]]
-    MLL::map[ ->(i){ -i }, t, [3] ]
-                       # => [[ [-1], [-3], [-1] ],
-                             [ [ 0], [-2], [ 0] ],
-                             [ [-1], [-3], [-1] ]]
 
     MLL::table[ MLL::times, 9, 9 ]
                        # => [[1,  2,  3,  4,  5,  6,  7,  8,  9],
@@ -48,43 +36,72 @@ The main goal is to make Ruby more powerful by including the most used functions
                              [7, 14, 21, 28, 35, 42, 49, 56, 63],
                              [8, 16, 24, 32, 40, 48, 56, 64, 72],
                              [9, 18, 27, 36, 45, 54, 63, 72, 81]]
+
+    # similar to Ruby's #product with #map...
+    t = MLL::table[ ->(i,j){ i+j }, [[1, 0, 1]], [[0, 2, 0]] ]
+                       # => [[1, 3, 1],
+                             [0, 2, 0],
+                             [1, 3, 1]]
+    # ... but our #map...
+    t = MLL::map[ ->(i){ [i] }, t, [2] ]
+                       # => [[ [1], [3], [1] ],
+                             [ [0], [2], [0] ],
+                             [ [1], [3], [1] ]]
+    # ... can go deeper
+    MLL::map[ ->(i){ -i }, t, [3] ]
+                       # => [[ [-1], [-3], [-1] ],
+                             [ [ 0], [-2], [ 0] ],
+                             [ [-1], [-3], [-1] ]]
+
     # ::times     means  *
     # ::divide    means  /
     # ::subtract  means  -
     # ::plus      means  +
 
-    MLL::fold_list[ MLL::times, MLL::range[10] ]
-                       # => [1,2,6,24,120,720,5040,40320,362880,3628800]
-
-    # here is `Listable' magic, allowing to zip arrays
+    # here is another `Listable' magic, allowing to zip arrays
     #   even of different dimensions with basic operations
     MLL::times[ [[1,2],[3,4]], [5,6] ]
                        # => [[5,10], [18,24]]
+
+    # listing factorials # http://stackoverflow.com/a/3590520/322020
+    MLL::fold_list[ MLL::times, MLL::range[8] ]
+                       # => [1, 2, 6, 24, 120, 720, 5040, 40320]
     
+    MLL::fold_list[ ->(a,b){ 10*a + b }, 0, [4,5,1,6,7,8] ]
+                       # => [0, 4, 45, 451, 4516, 45167, 451678]
+
     # http://en.wikipedia.org/wiki/Collatz_conjecture
     MLL::nest_list[ ->(i){ i.even? ? i/2 : (i*3+1)/2 }, 20, 10 ]
                        # => [20, 10, 5, 8, 4, 2, 1, 2, 1, 2, 1]
 
-    MLL::fold_list[ ->(a,b){ 10*a + b }, 0, [4,5,1,6,7,8] ]
-                       # => [0,4,45,451,4516,45167,451678]
-
-    MLL::subdivide[ 5, 10, 4 ]
-                       # => [5.0, 6.25, 7.5, 8.75, 10.0]
-    
-    MLL::tally[ "the quick brown fox jumps over the lazy dog".chars ]
-    # => {"t"=>2, "h"=>2, "e"=>3, " "=>8, "q"=>1, "u"=>2, "i"=>1, "c"=>1, "k"=>1,
-          "b"=>1, "r"=>2, "o"=>4, "w"=>1, "n"=>1, "f"=>1, "x"=>1, "j"=>1, "m"=>1,
-          "p"=>1, "s"=>1, "v"=>1, "l"=>1, "a"=>1, "z"=>1, "y"=>1, "d"=>1, "g"=>1}
+    # counting characters and nice printing the resulting table
+    MLL::grid[ MLL::tally[ "the quick brown fox jumps over the lazy dog".chars ].
+                 sort_by(&:last).reverse.take(10),
+               frame: :all, spacings: [2, 0] ]
+                       # => ┏━━━┳━━━┓
+                            ┃   ┃ 8 ┃
+                            ┃ o ┃ 4 ┃
+                            ┃ e ┃ 3 ┃
+                            ┃ u ┃ 2 ┃
+                            ┃ h ┃ 2 ┃
+                            ┃ r ┃ 2 ┃
+                            ┃ t ┃ 2 ┃
+                            ┃ n ┃ 1 ┃
+                            ┃ p ┃ 1 ┃
+                            ┃ m ┃ 1 ┃
+                            ┗━━━┻━━━┛
+    # current implementation of #grid sucks and needs your help ,.)
 
     MLL::riffle[ "4345252523535".chars, ",", [-4,1,-4] ]
                        # => "4,345,252,523,535"
 
-    MLL::grid[ [["a", "bbbb"], ["ccc", "d"]], frame: :all, alignment: :right ]
-                       # => "┏━━━┳━━━━┓\n" \
-                            "┃  a┃bbbb┃\n" \
-                            "┣━━━╋━━━━┫\n" \
-                            "┃ccc┃   d┃\n" \
-                            "┗━━━┻━━━━┛\n"
+    MLL::subdivide[ 5, 10, 4 ]
+                       # => [5.0, 6.25, 7.5, 8.75, 10.0]
+
+    MLL::most[ [1, 2, 3, 4] ]  # => [1, 2, 3]
+    # now it's possible to extend core classes with some of those methods
+    require "mll/core_ext"
+    [1, 2, 3, 4].most          # => [1, 2, 3]
 
 Note that to see some of above examples working in the same way you need `.to_a`, `.map(&:to_a)` or even `.to_a.map(&:to_a)` since lazyness is intensively used.
 
