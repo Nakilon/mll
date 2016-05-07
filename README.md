@@ -76,6 +76,16 @@ The main goal is to make Ruby more powerful by including the most used functions
           "b"=>1, "r"=>2, "o"=>4, "w"=>1, "n"=>1, "f"=>1, "x"=>1, "j"=>1, "m"=>1,
           "p"=>1, "s"=>1, "v"=>1, "l"=>1, "a"=>1, "z"=>1, "y"=>1, "d"=>1, "g"=>1}
 
+    MLL::riffle[ "4345252523535".chars, ",", [-4,1,-4] ]
+                       # => "4,345,252,523,535"
+
+    MLL::grid[ [["a", "bbbb"], ["ccc", "d"]], frame: :all, alignment: :right ]
+                       # => "┏━━━┳━━━━┓\n" \
+                            "┃  a┃bbbb┃\n" \
+                            "┣━━━╋━━━━┫\n" \
+                            "┃ccc┃   d┃\n" \
+                            "┗━━━┻━━━━┛\n"
+
 Note that to see some of above examples working in the same way you need `.to_a`, `.map(&:to_a)` or even `.to_a.map(&:to_a)` since lazyness is intensively used.
 
 ### Installation
@@ -89,6 +99,10 @@ Note that to see some of above examples working in the same way you need `.to_a`
 or
 
     rake spec
+
+or
+
+    rake    # to implicitly run 'rake todo'
 
 ### TODO (this section is filled automatically by `rake todo` task -- do not remove)
 
