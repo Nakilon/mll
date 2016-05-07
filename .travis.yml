@@ -39,6 +39,6 @@ matrix:
 env:
   - rvm_max_time_flag=60
 before_install:
-  - gem install bundler
+  - gem install bundler -v1.7.3
   - rm Gemfile.lock
 script: rake spec
