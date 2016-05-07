@@ -212,23 +212,23 @@ module MLL
       end
     end
 
-    def define_listable_function name, &block
-      (class << self; self end).class_eval do
-        define_method name do
-          lambda do |*args|
-            case args.map{ |i| i.respond_to? :map }
-              when [true] ; args.first.lazy.map &method(name).call
-              when [true, true] ; args.first.lazy.zip(args.last).map{ |i, j| send(name)[i, j] }
-              when [true, false] ; args.first.lazy.map{ |i| send(name)[i, args.last] }
-              when [false, true] ; args.last.lazy.map{ |i| send(name)[args.first, i] }
-            else
-              block.call *args
-            end
+  end
+
+  def self.define_listable_function name, &block
+    (class << self; self end).class_eval do
+      define_method name do
+        lambda do |*args|
+          case args.map{ |i| i.respond_to? :map }
+            when [true] ; args.first.lazy.map &method(name).call
+            when [true, true] ; args.first.lazy.zip(args.last).map{ |i, j| send(name)[i, j] }
+            when [true, false] ; args.first.lazy.map{ |i| send(name)[i, args.last] }
+            when [false, true] ; args.last.lazy.map{ |i| send(name)[args.first, i] }
+          else
+            block.call *args
           end
         end
       end
     end
-
   end
 
   # TODO not sure if we need any other kind of Listability except of #range[[Array]]

@@ -1,5 +1,4 @@
-require_relative File.join "..", "lib", "mll"
-
+require_relative "../lib/mll"
 
 # PERMATODO test all implemented exceptions
 # PERMATODO test all types returned (not actually all but about lazyness)
