@@ -15,11 +15,11 @@ rvm:
   - jruby-head
   - rbx
   - rbx-2
-jdk:
-  - openjdk7
-  - oraclejdk7
-  - oraclejdk8
-  - openjdk6
+# jdk:
+#   - openjdk7
+#   - oraclejdk7
+#   - oraclejdk8
+#   - openjdk6
 os:
   - linux
   - osx
