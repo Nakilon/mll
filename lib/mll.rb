@@ -1,6 +1,6 @@
 module MLL
 
-  VERSION = "2.4.1"
+  VERSION = "2.5.0"
 
   class << self
 
@@ -209,6 +209,19 @@ module MLL
       # not Enumerator because if the end is invisible we can't stop at -2
       lambda do |list|
         list[0..-2]
+      end
+    end
+
+    def rest
+      lambda do |list|
+        Enumerator.new do |e|
+          begin
+            enum = list.to_enum.tap &:next
+            loop{ e << enum.next }
+          rescue StopIteration
+            next
+          end
+        end
       end
     end
 

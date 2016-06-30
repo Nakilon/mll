@@ -822,7 +822,37 @@ describe MLL do
 
       end
 
-      # TODO #rest
+      # https://reference.wolfram.com/language/ref/Rest.html
+      describe "#rest" do
+
+        describe "Basic Examples:" do
+
+          example "???" do
+            expect(rest[[1,2,3,4]]).to be_a Enumerator
+            expect(rest[[1,2,3,4]].to_a).to eq [2,3,4]
+          end
+
+        end
+
+        describe "Applications:" do
+
+          example "nest the operation of finding the rest of a list" do
+            expect(nest_list[[1,2,3,4,5], 3, rest]).to be_a Enumerator
+            expect(nest_list[[1,2,3,4,5], 3, rest].map(&:to_a)).to eq [[1,2,3,4,5], [2,3,4,5], [3,4,5], [4,5]]
+          end
+
+        end
+
+        describe "Properties & Relations:" do
+
+          example "#rest is equivalent to Array#drop(1)" do
+            expect(rest[[1,2,3,4]]).to be_a Enumerator
+            expect(rest[[1,2,3,4]].to_a).to eq [1,2,3,4].drop 1
+          end
+
+        end
+
+      end
 
       # https://reference.wolfram.com/language/ref/Dimensions.html
       describe "#dimensions" do
