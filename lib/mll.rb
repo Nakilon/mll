@@ -119,25 +119,24 @@ module MLL
     # http://www.unicode.org/charts/PDF/U2500.pdf
     # https://en.wikipedia.org/wiki/Box_Drawing
     def grid
-      lambda do |table, **options|
+      lambda do |table, spacings: [1, 1], **options|
         # TODO negative spacings?
-        options[:spacings] ||= [1, 1]
-        spacings_horizontal, spacings_vertical = [*options[:spacings]]
+        spacings_horizontal, spacings_vertical = spacings
         spacings_vertical ||= 1
-        raise ArgumentError.new("unknown value of :alignment option '#{options[:alignment]}'") unless \
+        raise ArgumentError.new("unsupported value of :alignment option '#{options[:alignment]}'") unless \
           alignment = {
             nil => :center,
             :center => :center,
             :left => :ljust,
             :right => :rjust,
           }[options[:alignment]]
-        frames = {
-          nil  => "              ",
-          true => "┃ ┏┓ ┗┛━ ┃━━┃ ",
-          :all => "┃┃┏┓╋┗┛━━┣┳┻┫ ",
-        }[options[:frame]]
-        raise ArgumentError.new("unknown value of :frame option '#{options[:frame]}'") if options[:frame] && !frames
-        # TODO smth with this #.all?
+        raise ArgumentError.new("unsupported value of :frame option '#{options[:frame]}'") unless \
+          frames = {
+            nil  => "              ",
+            true => "┃ ┏┓ ┗┛━ ┃━━┃ ",
+            :all => "┃┃┏┓╋┗┛━━┣┳┻┫ ",
+          }[options[:frame]]
+        # TODO smth with this; maybe check out how Mathematica handles `Table[{1,{2,3},4}]
         table = [table] unless table.all?{ |e| e.respond_to? :each }
         width = table.map(&:size).max - 1
         strings = table.map{ |row| row.dup.tap{ |a| a[width] = a[width] }.map(&:to_s) }
