@@ -1,3 +1,5 @@
+require "pp"
+
 require_relative "../lib/mll"
 
 # PERMATODO test all implemented exceptions
