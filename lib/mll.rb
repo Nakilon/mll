@@ -1,6 +1,6 @@
 module MLL
 
-  VERSION = "2.5.0"
+  VERSION = "2.5.1"
 
   class << self
 
@@ -156,20 +156,19 @@ module MLL
             lines = s.scan(/.+/)
             max = lines.map(&:size).max || 0
             lines.map!{ |line| line.ljust(max).method(alignment).call(cols[j]) }
-            Array.new([rows[i] + spacing_vertical * 2 - 1, 1].max) do |k|
-              Array.new([cols[j] + spacing_horizontal * 2 - 1, 1].max) do |l|
-                m = k - spacing_vertical
-                n = l - spacing_horizontal
-                0<=m && m<lines.size && 0<=n && n<cols[j] ? lines[m][n] : frames[(
-                  h = spacing_horizontal.zero?
-                  v = spacing_vertical.zero?
-                  k == 0 ? l == 0 ?
-                    h ? v ? ?O : 7 : v ? 0 :
-                      i.zero? ? j.zero? ? 2 : 10 : j.zero? ? 9 : 4 :
-                    v ? 13 : i.zero? ? 7 : 8 : l == 0 ? j.zero? ? 0 : 1 : 13
-                )]
-              end
-            end
+            self.table[ lambda do |k, l|
+              m = k - spacing_vertical
+              n = l - spacing_horizontal
+              0<=m && m<lines.size && 0<=n && n<cols[j] ? lines[m][n] : frames[(
+                h = spacing_horizontal.zero?
+                v = spacing_vertical.zero?
+                k == 0 ? l == 0 ?
+                  h ? v ? ?O : 7 : v ? 0 :
+                    i.zero? ? j.zero? ? 2 : 10 : j.zero? ? 9 : 4 :
+                  v ? 13 : i.zero? ? 7 : 8 : l == 0 ? j.zero? ? 0 : 1 : 13
+              )]
+            end, 0...[rows[i] + spacing_vertical   * 2 - 1, 1].max,
+                 0...[cols[j] + spacing_horizontal * 2 - 1, 1].max ]
           end.transpose.map{ |row| row.inject :+ }
         end
 
