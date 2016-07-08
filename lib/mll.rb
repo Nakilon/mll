@@ -119,47 +119,71 @@ module MLL
     # http://www.unicode.org/charts/PDF/U2500.pdf
     # https://en.wikipedia.org/wiki/Box_Drawing
     def grid
-      lambda do |table, **options|
+      lambda do |table, spacings: [1, 1], **options|
         # TODO negative spacings?
-        options[:spacings] ||= [1, 1]
-        spacings_horizontal, spacings_vertical = [*options[:spacings]]
-        spacings_vertical ||= 1
-        raise ArgumentError.new("unknown value of :alignment option '#{options[:alignment]}'") unless \
+        spacing_horizontal, spacing_vertical = spacings
+        spacing_vertical ||= 1
+        raise ArgumentError.new("unsupported value of :alignment option '#{options[:alignment]}'") unless \
           alignment = {
             nil => :center,
             :center => :center,
             :left => :ljust,
             :right => :rjust,
           }[options[:alignment]]
-        frames = {
-          nil  => "              ",
-          true => "┃ ┏┓ ┗┛━ ┃━━┃ ",
-          :all => "┃┃┏┓╋┗┛━━┣┳┻┫ ",
-        }[options[:frame]]
-        raise ArgumentError.new("unknown value of :frame option '#{options[:frame]}'") if options[:frame] && !frames
-        # TODO smth with this #.all?
+        raise ArgumentError.new("unsupported value of :frame option '#{options[:frame]}'") unless \
+          frames = {
+            nil  => "              ",
+            true => "┃ ┏┓ ┗┛━ ┃━━┃ ",
+            :all => "┃┃┏┓╋┗┛━━┣┳┻┫ ",
+          }[options[:frame]]
+        # TODO smth with this; maybe check out how Mathematica handles `Table[{1,{2,3},4}]`
+
         table = [table] unless table.all?{ |e| e.respond_to? :each }
-        width = table.map(&:size).max - 1
-        strings = table.map{ |row| row.dup.tap{ |a| a[width] = a[width] }.map(&:to_s) }
-        sizes = strings.transpose.map{ |col| col.map(&:size).max + [spacings_horizontal * 2 - 2, 0].max }
-        # TODO https://reference.wolfram.com/language/ref/Alignment.html
-        border_vertical  = [frames[9], sizes.map{ |size|  frames[8] * size }.join((frames[4] unless spacings_horizontal.zero?)), frames[12]]
-        spacing_vertical = [frames[0], sizes.map{ |size| frames[13] * size }.join((frames[0] unless spacings_horizontal.zero?)), frames[0]]
-        gap_vertical = lambda do |i|
-          j = i - 1
-          [*-j..j].map{ |k| [border_vertical][k] || spacings_vertical }
-        end.call spacings_vertical
-        [
-          [frames[2], sizes.map{ |size| frames[7] * size }.join((frames[10] unless spacings_horizontal.zero?)), frames[3]].join,
-          *([spacing_vertical.join] * [spacings_vertical - 1, 0].max),
-          strings.map{ |row| [frames[0], row.zip(sizes).map{ |str, size|
-            str.method(alignment).call(size)
-          }.join((frames[1] unless spacings_horizontal.zero?)), frames[0]].join }.join(
-            ?\n + gap_vertical.map{ |gap| gap.join + ?\n }.join
-          ),
-          *([spacing_vertical.join] * [spacings_vertical - 1, 0].max),
-          [frames[5], sizes.map{ |size| frames[7] * size }.join((frames[11] unless spacings_horizontal.zero?)), frames[6]].join,
-        ].join(?\n) + ?\n
+        width = table.map(&:size).max
+        table = table.map do |row|
+          row.dup.tap do |row|
+            row[width - 1] = row[width - 1]
+          end.map &:to_s
+        end
+        rows = table.map{ |row| row.map{ |s| s.count ?\n }.max + 1 }
+        cols = table.transpose.map{ |col| col.flat_map{ |s| s.scan(/.+/).map(&:size) }.max }
+
+        chars = table.flat_map.with_index do |row, i|
+          row.map.with_index do |s, j|
+            lines = s.scan(/.+/)
+            max = lines.map(&:size).max || 0
+            lines.map!{ |line| line.ljust(max).method(alignment).call(cols[j]) }
+            Array.new([rows[i] + spacing_vertical * 2 - 1, 1].max) do |k|
+              Array.new([cols[j] + spacing_horizontal * 2 - 1, 1].max) do |l|
+                m = k - spacing_vertical
+                n = l - spacing_horizontal
+                0<=m && m<lines.size && 0<=n && n<cols[j] ? lines[m][n] : frames[(
+                  h = spacing_horizontal.zero?
+                  v = spacing_vertical.zero?
+                  k == 0 ? l == 0 ?
+                    h ? v ? ?O : 7 : v ? 0 :
+                      i.zero? ? j.zero? ? 2 : 10 : j.zero? ? 9 : 4 :
+                    v ? 13 : i.zero? ? 7 : 8 : l == 0 ? j.zero? ? 0 : 1 : 13
+                )]
+              end
+            end
+          end.transpose.map{ |row| row.inject :+ }
+        end
+
+        borders_horizontal = fold_list[0, rows, ->i,j{ i + j + spacing_vertical * 2 - 1 }].to_a
+        chars.each_with_index do |line, i|
+          line.push frames[borders_horizontal.include?(i) && !spacing_vertical.zero? ? 12 : 0]
+          line.unshift frames[i.zero? ? 2 : borders_horizontal.include?(i) && !spacing_vertical.zero? ? 9 : 0] if spacing_horizontal.zero?
+        end
+        borders_vertical = fold_list[0, cols, ->i,j{ i + j + spacing_horizontal * 2 - 1 }].to_a
+        chars = chars.transpose.each_with_index do |line, i|
+          line.push frames[i.zero? ? 5 : borders_vertical.include?(i) && !spacing_horizontal.zero? ? 11 : 7]
+          line.unshift frames[i.zero? ? 2 : borders_vertical.include?(i) && !spacing_horizontal.zero? ? 10 : 7] if spacing_vertical.zero?
+        end.transpose
+        chars[-1][-1] = frames[6]
+        chars[0][-1] = frames[3]
+
+        chars.map{ |row| row.push ?\n }.join
       end
     end
 
