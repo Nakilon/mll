@@ -157,27 +157,36 @@ module MLL
                 m = k - spacing_vertical
                 n = l - spacing_horizontal
 # p [i,j,k,l,m,n]
-                0<=m && m<lines.size && 0<=n && n<max ? lines[m][n] : frames[k == 0 ? l == 0 ? spacing_horizontal.zero? ? 7 : 4 : 7 : l == 0 ? 0 : 13]
+                0<=m && m<lines.size && 0<=n && n<max ? lines[m][n] : frames[(
+                  h = spacing_horizontal.zero?
+                  v = spacing_vertical.zero?
+                  k == 0 ? l == 0 ?
+                    h ? v ? ?O : 7 : v ? 0 :
+                      i.zero? ? j.zero? ? 2 : 10 : j.zero? ? 9 : 4 :
+                    v ? 13 : i.zero? ? 7 : 8 : l == 0 ? (j.zero? ? 0 : 1) : 13
+                )]
               end
             end
           end.transpose.map{ |row| row.inject :+ }
         end
 pp chars
+        borders_horizontal = fold_list[0, rows, ->i,j{ i + j + spacing_vertical * 2 - 1 }].to_a
+        borders_vertical = fold_list[0, cols, ->i,j{ i + j + spacing_horizontal * 2 - 1 }].to_a
         # if spacing_horizontal > 0
           chars.each_with_index do |line, i|
-            line.push frames[i.zero? ? 3 : 0]
-            line.unshift frames[i.zero? ? 2 : 0] if spacing_horizontal.zero?
+            line.push frames[borders_horizontal.include?(i) && !spacing_vertical.zero? ? 12 : 0]
+            line.unshift frames[i.zero? ? 2 : borders_horizontal.include?(i) && !spacing_vertical.zero? ? 9 : 0] if spacing_horizontal.zero?
           end
         # end
         # if spacing_vertical > 0
           chars = chars.transpose.each_with_index do |line, i|
-            line.push frames[i.zero? ? 5 : 7]
-            line.unshift frames[i.zero? ? 6 : 7] if spacing_vertical.zero?
+            line.push frames[i.zero? ? 5 : borders_vertical.include?(i) && !spacing_horizontal.zero? ? 11 : 7]
+            line.unshift frames[i.zero? ? 2 : borders_vertical.include?(i) && !spacing_horizontal.zero? ? 10 : 7] if spacing_vertical.zero?
           end.transpose
         # end
-        if spacing_vertical > 0 && spacing_horizontal > 0
+        # if spacing_vertical > 0 && spacing_horizontal > 0
           chars[-1][-1] = frames[6]
-        end
+          chars[0][-1] = frames[3]
 # pp chars
         chars.map{ |row| row.push ?\n }.join
       end
