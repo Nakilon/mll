@@ -96,8 +96,11 @@ module MLL
       lambda do |f, *args|
         [].tap do |result|
           [[result, args.map{ |r| # add lazy?
-            r.respond_to?(:map) && r.first.respond_to?(:map) ?
-              r.first : range[*r]
+            if r.respond_to? :map
+              next r if r.is_a? Range
+              next r.first if r.first.respond_to? :map # TODO check r.size?
+            end
+            range[*r]
           }]].tap do |stack|
             stack.each do |ai, ri|
               # TODO try to make #table lazy (Enumerator instead of Array)
