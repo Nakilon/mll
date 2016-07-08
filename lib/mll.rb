@@ -137,6 +137,7 @@ module MLL
             :all => "┃┃┏┓╋┗┛━━┣┳┻┫ ",
           }[options[:frame]]
         # TODO smth with this; maybe check out how Mathematica handles `Table[{1,{2,3},4}]`
+
         table = [table] unless table.all?{ |e| e.respond_to? :each }
         width = table.map(&:size).max
         table = table.map do |row|
@@ -146,6 +147,7 @@ module MLL
         end
         rows = table.map{ |row| row.map{ |s| s.count ?\n }.max + 1 }
         cols = table.transpose.map{ |col| col.flat_map{ |s| s.scan(/.+/).map(&:size) }.max }
+
         chars = table.flat_map.with_index do |row, i|
           row.map.with_index do |s, j|
             lines = s.scan(/.+/)
@@ -161,24 +163,26 @@ module MLL
                   k == 0 ? l == 0 ?
                     h ? v ? ?O : 7 : v ? 0 :
                       i.zero? ? j.zero? ? 2 : 10 : j.zero? ? 9 : 4 :
-                    v ? 13 : i.zero? ? 7 : 8 : l == 0 ? (j.zero? ? 0 : 1) : 13
+                    v ? 13 : i.zero? ? 7 : 8 : l == 0 ? j.zero? ? 0 : 1 : 13
                 )]
               end
             end
           end.transpose.map{ |row| row.inject :+ }
         end
+
         borders_horizontal = fold_list[0, rows, ->i,j{ i + j + spacing_vertical * 2 - 1 }].to_a
+        chars.each_with_index do |line, i|
+          line.push frames[borders_horizontal.include?(i) && !spacing_vertical.zero? ? 12 : 0]
+          line.unshift frames[i.zero? ? 2 : borders_horizontal.include?(i) && !spacing_vertical.zero? ? 9 : 0] if spacing_horizontal.zero?
+        end
         borders_vertical = fold_list[0, cols, ->i,j{ i + j + spacing_horizontal * 2 - 1 }].to_a
-          chars.each_with_index do |line, i|
-            line.push frames[borders_horizontal.include?(i) && !spacing_vertical.zero? ? 12 : 0]
-            line.unshift frames[i.zero? ? 2 : borders_horizontal.include?(i) && !spacing_vertical.zero? ? 9 : 0] if spacing_horizontal.zero?
-          end
-          chars = chars.transpose.each_with_index do |line, i|
-            line.push frames[i.zero? ? 5 : borders_vertical.include?(i) && !spacing_horizontal.zero? ? 11 : 7]
-            line.unshift frames[i.zero? ? 2 : borders_vertical.include?(i) && !spacing_horizontal.zero? ? 10 : 7] if spacing_vertical.zero?
-          end.transpose
-          chars[-1][-1] = frames[6]
-          chars[0][-1] = frames[3]
+        chars = chars.transpose.each_with_index do |line, i|
+          line.push frames[i.zero? ? 5 : borders_vertical.include?(i) && !spacing_horizontal.zero? ? 11 : 7]
+          line.unshift frames[i.zero? ? 2 : borders_vertical.include?(i) && !spacing_horizontal.zero? ? 10 : 7] if spacing_vertical.zero?
+        end.transpose
+        chars[-1][-1] = frames[6]
+        chars[0][-1] = frames[3]
+
         chars.map{ |row| row.push ?\n }.join
       end
     end
