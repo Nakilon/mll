@@ -150,14 +150,12 @@ module MLL
           row.map.with_index do |s, j|
             lines = s.scan(/.+/)
             max = lines.map(&:size).max || 0
-            lines.map!{ |line| line.ljust(max).center max }
-# pp lines
+            lines.map!{ |line| line.ljust(max).method(alignment).call(cols[j]) }
             Array.new([rows[i] + spacing_vertical * 2 - 1, 1].max) do |k|
               Array.new([cols[j] + spacing_horizontal * 2 - 1, 1].max) do |l|
                 m = k - spacing_vertical
                 n = l - spacing_horizontal
-# p [i,j,k,l,m,n]
-                0<=m && m<lines.size && 0<=n && n<max ? lines[m][n] : frames[(
+                0<=m && m<lines.size && 0<=n && n<cols[j] ? lines[m][n] : frames[(
                   h = spacing_horizontal.zero?
                   v = spacing_vertical.zero?
                   k == 0 ? l == 0 ?
@@ -169,25 +167,18 @@ module MLL
             end
           end.transpose.map{ |row| row.inject :+ }
         end
-pp chars
         borders_horizontal = fold_list[0, rows, ->i,j{ i + j + spacing_vertical * 2 - 1 }].to_a
         borders_vertical = fold_list[0, cols, ->i,j{ i + j + spacing_horizontal * 2 - 1 }].to_a
-        # if spacing_horizontal > 0
           chars.each_with_index do |line, i|
             line.push frames[borders_horizontal.include?(i) && !spacing_vertical.zero? ? 12 : 0]
             line.unshift frames[i.zero? ? 2 : borders_horizontal.include?(i) && !spacing_vertical.zero? ? 9 : 0] if spacing_horizontal.zero?
           end
-        # end
-        # if spacing_vertical > 0
           chars = chars.transpose.each_with_index do |line, i|
             line.push frames[i.zero? ? 5 : borders_vertical.include?(i) && !spacing_horizontal.zero? ? 11 : 7]
             line.unshift frames[i.zero? ? 2 : borders_vertical.include?(i) && !spacing_horizontal.zero? ? 10 : 7] if spacing_vertical.zero?
           end.transpose
-        # end
-        # if spacing_vertical > 0 && spacing_horizontal > 0
           chars[-1][-1] = frames[6]
           chars[0][-1] = frames[3]
-# pp chars
         chars.map{ |row| row.push ?\n }.join
       end
     end
