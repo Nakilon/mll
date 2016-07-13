@@ -1,4 +1,4 @@
-require_relative "lib/mll"
+require_relative "../mll"
 
 class Array
   def most

@@ -1339,7 +1339,7 @@ describe "core_ext" do
   end
 
   example "after core_ext required" do
-    require_relative "../core_ext"
+    require_relative "../lib/mll/core_ext"
     aggregate_failures "everything is fine" do
       expect([1,2,3,4].most).to eq [1,2,3]
 
