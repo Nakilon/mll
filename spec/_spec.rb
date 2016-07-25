@@ -1322,6 +1322,17 @@ describe MLL do
 
       end
 
+      example "handle nils" do
+
+        expect(grid[[[nil, nil], [nil, "a"]]]).to eq \
+          "    \n" \
+          "    \n" \
+          "    \n" \
+          "  a \n" \
+          "    \n"
+
+      end
+
     end
 
   end

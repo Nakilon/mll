@@ -23,10 +23,9 @@ module MLL
             stack.each do |ai, ri|
               # TODO try to make #table lazy (Enumerator instead of Array)
     def grid
-      lambda do |table, **options|
+      lambda do |table, spacings: [1, 1], **options|
         # TODO negative spacings?
-        # TODO smth with this #.all?
-        # TODO https://reference.wolfram.com/language/ref/Alignment.html
+        # TODO smth with this; maybe check out how Mathematica handles `Table[{1,{2,3},4}]`
     def riffle
       lambda do |*args|
         case args.size
@@ -82,8 +81,6 @@ describe MLL do
           # TODO #mapthread ?
           # TODO #mapindexed ?
           # TODO "negative levels"
-    describe "Elements of Lists" do
-      # TODO #rest
     # TODO http://reference.wolfram.com/language/guide/RearrangingAndRestructuringLists.html
     # TODO http://reference.wolfram.com/language/guide/MathematicalAndCountingOperationsOnLists.html
   describe "Functional Programming" do

@@ -1,6 +1,6 @@
 module MLL
 
-  VERSION = "2.6.1"
+  VERSION = "2.6.2"
 
   class << self
 
@@ -149,7 +149,7 @@ module MLL
           end.map &:to_s
         end
         rows = table.map{ |row| row.map{ |s| s.count ?\n }.max + 1 }
-        cols = table.transpose.map{ |col| col.flat_map{ |s| s.scan(/.+/).map(&:size) }.max }
+        cols = table.transpose.map{ |col| col.flat_map{ |s| s.scan(/.*/).map(&:size) }.max }
 
         chars = table.flat_map.with_index do |row, i|
           row.map.with_index do |s, j|
