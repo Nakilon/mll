@@ -8,6 +8,10 @@ module MLL
         enumerator = Enumerator.new do |e|
           while list.all?{ |i| i.respond_to? :each } &&
             # TODO refactor into depth-first yielding
+    def nest_while_list
+      lambda do |expr, f, test|
+        Enumerator.new do |e|
+          # TODO test on this drunk Symbol thing
     def fold_list
       lambda do |x, list, f = nil|
         # TODO use Ruby#inject ?

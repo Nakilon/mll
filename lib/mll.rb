@@ -1,6 +1,6 @@
 module MLL
 
-  VERSION = "2.6.3"
+  VERSION = "2.6.4"
 
   class << self
 
@@ -62,7 +62,8 @@ module MLL
       lambda do |expr, f, test|
         Enumerator.new do |e|
           e << expr
-          e << expr = f.call(expr) while test.call expr
+          e << expr = (f.is_a?(Symbol) ? expr.send(f) : f.call(expr)) while (test.is_a?(Symbol) ? expr.send(test) : test.call(expr))
+          # TODO test on this drunk Symbol thing
         end
       end
     end
