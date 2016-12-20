@@ -1379,8 +1379,9 @@ describe "core_ext" do
   example "after core_ext required" do
     require_relative "../lib/mll/core_ext"
     aggregate_failures "everything is fine" do
-      expect([1,2,3,4].most).to eq [1,2,3]
-
+      expect( [1,2,3,4].most ).to eq [1,2,3]
+      expect( [1,2,3,4].rest.to_a ).to eq [2,3,4]
+      expect( 123456.nest_while_list(->(i){ i / 2 }, ->(i){ i.even? }).to_a ).to eq [123456, 61728, 30864, 15432, 7716, 3858, 1929]
     end
   end
 
