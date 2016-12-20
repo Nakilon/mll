@@ -52,10 +52,18 @@ module MLL
     end
 
     def nest_while
-      # TODO finish me
       lambda do |expr, f, test|
-        expr = f[expr] while test[expr]
+        expr = f.call expr while test.call expr
         expr
+      end
+    end
+
+    def nest_while_list
+      lambda do |expr, f, test|
+        Enumerator.new do |e|
+          e << expr
+          e << expr = f.call(expr) while test.call expr
+        end
       end
     end
 

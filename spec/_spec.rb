@@ -1007,6 +1007,33 @@ describe MLL do
 
       end
 
+      # http://reference.wolfram.com/language/ref/NestWhileList.html
+      describe "#nest_while_list" do
+
+        describe "Details:" do
+
+          # TODO: "NestWhileList[f,expr,test,m] does not start applying test until at least m results have been generated. »"
+          # TODO: "NestWhileList[f,expr,test,m] is equivalent to NestWhileList[f,expr,test,{m,m}]. »"
+          # TODO: "NestWhileList[f,expr,UnsameQ,2] is equivalent to FixedPointList[f,expr]. »"
+          # TODO: "NestWhileList[f,expr,UnsameQ,All] goes on applying f until the same result first appears more than once."
+          # TODO: "NestWhileList[f,expr,test,m,max,n] applies f an extra n times, appending the results to the list generated. »"
+          # TODO: "NestWhileList[f,expr,test,m,max,-n] drops the last n elements from the list generated. »"
+
+        end
+
+        describe "Basic Examples:" do
+
+          example "keep dividing by 2 until the result is no longer an even number" do
+            expect(nest_while_list[123456, ->(i){ i / 2 }, ->(i){ i.even? }]).to be_a Enumerator
+            expect(nest_while_list[123456, ->(i){ i / 2 }, ->(i){ i.even? }].to_a).to eq [123456, 61728, 30864, 15432, 7716, 3858, 1929]
+          end
+
+        end
+
+        # TODO A LOT
+
+      end
+
     end
 
   end

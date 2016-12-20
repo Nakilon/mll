@@ -8,8 +8,6 @@ module MLL
         enumerator = Enumerator.new do |e|
           while list.all?{ |i| i.respond_to? :each } &&
             # TODO refactor into depth-first yielding
-    def nest_while
-      # TODO finish me
     def fold_list
       lambda do |x, list, f = nil|
         # TODO use Ruby#inject ?
@@ -103,6 +101,15 @@ describe MLL do
           # TODO example "find the next twin prime after 888" do
         describe "Properties & Relations:" do
           # TODO "#nest_while can be expressed in terms of a while loop" do
+      describe "#nest_while_list" do
+        describe "Details:" do
+          # TODO: "NestWhileList[f,expr,test,m] does not start applying test until at least m results have been generated. »"
+          # TODO: "NestWhileList[f,expr,test,m] is equivalent to NestWhileList[f,expr,test,{m,m}]. »"
+          # TODO: "NestWhileList[f,expr,UnsameQ,2] is equivalent to FixedPointList[f,expr]. »"
+          # TODO: "NestWhileList[f,expr,UnsameQ,All] goes on applying f until the same result first appears more than once."
+          # TODO: "NestWhileList[f,expr,test,m,max,n] applies f an extra n times, appending the results to the list generated. »"
+          # TODO: "NestWhileList[f,expr,test,m,max,-n] drops the last n elements from the list generated. »"
+        # TODO A LOT
   describe "Numerical Data" do
     describe "#mean" do
       # TODO examples to README.md
